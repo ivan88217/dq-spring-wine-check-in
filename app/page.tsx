@@ -10,7 +10,6 @@ import { AlertError } from "@/components/alert-error";
 import { getCookies, setCookie } from "@/lib/cookie-parser";
 
 export default function Home() {
-  const cookieName = "isChecked";
   const [code, setCode] = useState("");
   const [checkInDisabled, setCheckInDisabled] = useState(true);
   const [btnText, setBtnText] = useState("簽到");
