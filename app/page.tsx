@@ -26,13 +26,6 @@ export default function Home() {
     useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    api.api.test
-      .get({
-        $query: {
-          x: "1",
-        },
-      })
-      .then(console.log);
     const cookies = getCookies();
     if (!cookies.isChecked) {
       setCheckInDisabled(false);
