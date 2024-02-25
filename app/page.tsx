@@ -30,9 +30,9 @@ export default function Home() {
   useEffect(() => {
     const cookies = getCookies();
     if (!cookies.isChecked) {
-      setAlreadyChecked(false);
       return;
     }
+    setAlreadyChecked(true);
     setCode(cookies.isChecked);
   });
 
