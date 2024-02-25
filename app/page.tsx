@@ -37,7 +37,7 @@ export default function Home() {
   });
 
   const getCheckInBtnText = () => {
-    if (alreadyChecked) return `${code} 簽到成功`;
+    if (alreadyChecked) return `簽到成功`;
     if (onChecking) return `正在簽到中`;
     return "簽到";
   };
@@ -57,7 +57,7 @@ export default function Home() {
     });
     setErrorShown(true);
     if (currentTimeoutHandler) clearTimeout(currentTimeoutHandler);
-    const timeout = setTimeout(() => setErrorShown(false), 5000);
+    const timeout = setTimeout(() => setErrorShown(false), 7000);
     setCurrentTimeoutHandler(timeout);
     return;
   };
@@ -83,7 +83,7 @@ export default function Home() {
     console.log(isCheckedRes);
 
     if (isCheckedRes.data) {
-      alert(`${code}已經簽到過了`);
+      errorShow("不可重複簽到", `${code}已經簽到過了`);
       setOnChecking(false);
       return;
     }
@@ -132,6 +132,8 @@ export default function Home() {
           className="m-1 text-center border-green-800 bg-gray-900"
           placeholder="請輸入員工編號"
           onInput={handleInput}
+          disabled={alreadyChecked || onChecking}
+          defaultValue={code}
         />
         <Button
           className="m-1 w-[100%]"
