@@ -1,17 +1,12 @@
-import { Auth, script_v1 } from "googleapis";
+import axios from "axios";
 
-const auth = new Auth.GoogleAuth({
-  credentials: {
-    client_id: process.env.GOOGLE_CLIENT_ID,
-    client_email: process.env.GOOGLE_CLIENT_EMAIL,
-    project_id: process.env.GOOGLE_PROJECT_ID,
-    private_key: process.env.GOOGLE_PRIVATE_KEY,
-  },
-  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-});
+export const getAccessToken = async () => {
+  const secret = process.env.SECRET;
+  const scriptId = process.env.SCRIPT_ID;
 
-const scriptClient = new script_v1.Script({
-  auth: auth,
-});
+  const { data } = await axios.get(
+    `https://script.google.com/macros/s/${scriptId}/exec?secret=${secret}`,
+  );
 
-export { scriptClient };
+  return data.token as string;
+};

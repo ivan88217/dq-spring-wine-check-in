@@ -8,11 +8,11 @@ import type { MouseEventHandler, FormEventHandler } from "react";
 import { useEffect, useState } from "react";
 import { AlertError } from "@/components/alert-error";
 import { getCookies, setCookie } from "@/lib/cookie-parser";
-import { api } from "@/lib/api";
+import { edenApi } from "@/lib/api";
 
 export default function Home() {
   const [code, setCode] = useState("");
-  const [checkInDisabled, setCheckInDisabled] = useState(true);
+  const [alreadyChecked, setAlreadyChecked] = useState(false);
   const [btnText, setBtnText] = useState("簽到");
   const [error, setError] = useState<{
     title: string;
@@ -25,20 +25,30 @@ export default function Home() {
   const [currentTimeoutHandler, setCurrentTimeoutHandler] =
     useState<NodeJS.Timeout | null>(null);
 
+  const [onChecking, setOnChecking] = useState(false);
+
   useEffect(() => {
     const cookies = getCookies();
     if (!cookies.isChecked) {
-      setCheckInDisabled(false);
+      setAlreadyChecked(false);
       return;
     }
     setCode(cookies.isChecked);
   });
 
+  const getCheckInBtnText = () => {
+    if (alreadyChecked) return `${code} 簽到成功`;
+    if (onChecking) return `正在簽到中`;
+    return "簽到";
+  };
+
   useEffect(() => {
-    const text = checkInDisabled ? `${code} 簽到成功` : "簽到";
+    const text = getCheckInBtnText();
+
+    if (text === btnText) return;
 
     setBtnText(text);
-  }, [checkInDisabled, code]);
+  }, [alreadyChecked, onChecking, code]);
 
   const errorShow = (title: string, text?: string) => {
     setError({
@@ -56,13 +66,43 @@ export default function Home() {
     setCode(e.currentTarget.value);
   };
 
-  const handleSubmit: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleSubmit: MouseEventHandler<HTMLButtonElement> = async (e) => {
     if (!code) {
       errorShow("員工編號錯誤", "請輸入員工編號");
       return;
     }
+
+    setOnChecking(true);
+
+    const isCheckedRes = await edenApi.api["is-checked"].get({
+      $query: {
+        code,
+      },
+    });
+
+    console.log(isCheckedRes);
+
+    if (isCheckedRes.data) {
+      alert(`${code}已經簽到過了`);
+      setOnChecking(false);
+      return;
+    }
+
+    const checkInRes = await edenApi.api["check-in"].post({
+      code,
+    });
+
+    console.log(checkInRes);
+
+    if (checkInRes.error) {
+      errorShow("員工編號錯誤", checkInRes.error.value);
+      setOnChecking(false);
+      return;
+    }
+
     setCookie("isChecked", code, 60 * 60);
-    setCheckInDisabled(true);
+    setOnChecking(false);
+    setAlreadyChecked(true);
     alert(`${code} 簽到成功`);
   };
 
@@ -97,7 +137,7 @@ export default function Home() {
           className="m-1 w-[100%]"
           variant="secondary"
           onClick={handleSubmit}
-          disabled={checkInDisabled}
+          disabled={alreadyChecked || onChecking}
         >
           {btnText}
         </Button>
