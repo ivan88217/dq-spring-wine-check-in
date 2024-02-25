@@ -8,6 +8,7 @@ import type { MouseEventHandler, FormEventHandler } from "react";
 import { useEffect, useState } from "react";
 import { AlertError } from "@/components/alert-error";
 import { getCookies, setCookie } from "@/lib/cookie-parser";
+import { api } from "@/lib/api";
 
 export default function Home() {
   const [code, setCode] = useState("");
@@ -25,6 +26,13 @@ export default function Home() {
     useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    api.api.test
+      .get({
+        $query: {
+          x: "1",
+        },
+      })
+      .then(console.log);
     const cookies = getCookies();
     if (!cookies.isChecked) {
       setCheckInDisabled(false);
