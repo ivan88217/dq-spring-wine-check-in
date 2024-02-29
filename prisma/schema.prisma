@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// 總人員表
+model Member {
+  id               Int               @id @default(autoincrement())
+  name             String            @db.VarChar(12) // 員工姓名
+  code             String            @db.VarChar(32) // 員工編號
+  years            Float // 工作年資
+  department_code  String?            @db.VarChar(16) // 部門代碼
+  department_name  String?            @db.VarChar(32) // 部門名稱
+  isAttend         Boolean           @default(false) // 是否出席春酒
+  isStay           Boolean           @default(false) // 是否為留守人員
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  prizePoolMembers PrizePoolMember[]
+  checkIns         CheckIn[]
+  memberPrizes     MemberPrize[]
+}
+
+/// 獎池表
+model PrizePool {
+  id               Int               @id @default(autoincrement())
+  name             String            @db.VarChar(12) // 獎池名稱
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  prizePoolMembers PrizePoolMember[]
+}
+
+/// 獎池成員表
+model PrizePoolMember {
+  memberId    Int
+  prizePoolId Int
+  member      Member    @relation(fields: [memberId], references: [id])
+  prizePool   PrizePool @relation(fields: [prizePoolId], references: [id])
+
+  @@id([memberId, prizePoolId])
+}
+
+/// 簽到表
+model CheckIn {
+  id        Int      @id @default(autoincrement())
+  memberId  Int
+  createdAt DateTime @default(now())
+  member    Member   @relation(fields: [memberId], references: [id])
+}
+
+/// 獎項
+model Prize {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(12) // 獎項名稱
+  description  String?        @db.VarChar(32) // 獎項描述
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  memberPrizes MemberPrize[]
+}
+
+/// 中獎名單
+model MemberPrize {
+  memberId  Int
+  prizeId   Int
+  createdAt DateTime @default(now())
+  member    Member   @relation(fields: [memberId], references: [id])
+  prize     Prize    @relation(fields: [prizeId], references: [id])
+
+  @@id([memberId, prizeId])
+}
