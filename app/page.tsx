@@ -5,13 +5,32 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { MouseEventHandler, FormEventHandler } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AlertError } from "@/components/alert-error";
 import { getCookies, setCookie } from "@/lib/cookie-parser";
 import { edenApi } from "@/lib/api";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Member } from "@prisma/client";
+
+interface FindMemberResponse {
+  id: number;
+  code: string;
+  name: string;
+  department_name: string | null;
+}
 
 export default function Home() {
   const [code, setCode] = useState("");
+  const [name, setName] = useState("");
+  const [rows, setRaws] = useState<FindMemberResponse[]>([]);
   const [alreadyChecked, setAlreadyChecked] = useState(false);
   const [btnText, setBtnText] = useState("簽到");
   const [error, setError] = useState<{
@@ -62,8 +81,12 @@ export default function Home() {
     return;
   };
 
-  const handleInput: FormEventHandler<HTMLInputElement> = (e) => {
+  const handleCodeInput: FormEventHandler<HTMLInputElement> = (e) => {
     setCode(e.currentTarget.value);
+  };
+
+  const handleNameInput: FormEventHandler<HTMLInputElement> = (e) => {
+    setName(e.currentTarget.value);
   };
 
   const handleSubmit: MouseEventHandler<HTMLButtonElement> = async (e) => {
@@ -80,10 +103,8 @@ export default function Home() {
       },
     });
 
-    console.log(isCheckedRes);
-
-    if (isCheckedRes.data) {
-      errorShow("不可重複簽到", `${code}已經簽到過了`);
+    if (isCheckedRes.error) {
+      errorShow("錯誤", isCheckedRes.error.value);
       setOnChecking(false);
       return;
     }
@@ -92,10 +113,8 @@ export default function Home() {
       code,
     });
 
-    console.log(checkInRes);
-
     if (checkInRes.error) {
-      errorShow("員工編號錯誤", checkInRes.error.value);
+      errorShow("錯誤", checkInRes.error.value);
       setOnChecking(false);
       return;
     }
@@ -104,6 +123,26 @@ export default function Home() {
     setOnChecking(false);
     setAlreadyChecked(true);
     alert(`${code} 簽到成功`);
+  };
+
+  useEffect(() => {
+    if (name) {
+      edenApi.api["find-member"]
+        .get({
+          $query: {
+            name,
+          },
+        })
+        .then(({ data }) => {
+          if (data) {
+            setRaws(data);
+          }
+        });
+    }
+  }, [name]);
+
+  const selectMember = (member: FindMemberResponse) => {
+    setCode(member.code);
   };
 
   return (
@@ -129,20 +168,55 @@ export default function Home() {
         <Label htmlFor="code">員工編號</Label>
         <Input
           id="code"
-          className="m-1 text-center border-green-800 bg-gray-900"
+          className="m-1 text-center bg-gray-900"
           placeholder="請輸入員工編號"
-          onInput={handleInput}
+          onInput={handleCodeInput}
           disabled={alreadyChecked || onChecking}
-          defaultValue={code}
+          value={code}
         />
         <Button
           className="m-1 w-[100%]"
           variant="secondary"
           onClick={handleSubmit}
-          disabled={alreadyChecked || onChecking}
+          disabled={alreadyChecked || onChecking || !code}
         >
           {btnText}
         </Button>
+        <br />
+        <Label htmlFor="name">
+          以名稱搜尋<br />(於結果中選擇自己可自動填上員編)
+        </Label>
+        <Input
+          id="name"
+          className="m-1 text-center border-green-800 bg-gray-900"
+          placeholder="請輸入名稱"
+          onInput={handleNameInput}
+        />
+        <br />
+        {rows.length > 0 ? (
+          <Table className="w-[100%]">
+            <TableCaption>
+              <div>搜尋結果</div>
+              <div>(直接於結果中選擇自己就可以自動填上)</div>
+            </TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-center">員工編號</TableHead>
+                <TableHead className="text-center">部門</TableHead>
+                <TableHead className="text-center">姓名</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {rows.map((row, index) => (
+                <TableRow key={index} onClick={() => selectMember(row)}>
+                  <TableCell className="font-medium">{row.code}</TableCell>
+                  <TableCell>{row.department_name || "無"}</TableCell>
+                  <TableCell>{row.name}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : null}
       </div>
     </div>
   );
