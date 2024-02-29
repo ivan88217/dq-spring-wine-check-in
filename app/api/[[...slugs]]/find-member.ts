@@ -15,7 +15,7 @@ export const findMemberController = new Elysia().get(
         id: true,
         code: true,
         name: true,
-        department_name: true,
+        departmentName: true,
       },
     });
 
@@ -30,7 +30,7 @@ export const findMemberController = new Elysia().get(
         id: t.Number(),
         code: t.String(),
         name: t.String(),
-        department_name: t.Nullable(t.String()),
+        departmentName: t.Nullable(t.String()),
       })
     ),
     error({ error }) {

@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
@@ -20,8 +20,9 @@ model Member {
   name             String            @db.VarChar(12) // 員工姓名
   code             String            @db.VarChar(32) // 員工編號
   years            Float // 工作年資
-  department_code  String?            @db.VarChar(16) // 部門代碼
-  department_name  String?            @db.VarChar(32) // 部門名稱
+  email            String?           @db.VarChar(128) // 電子郵件
+  departmentCode   String?           @db.VarChar(16) // 部門代碼
+  departmentName   String?           @db.VarChar(32) // 部門名稱
   isAttend         Boolean           @default(false) // 是否出席春酒
   isStay           Boolean           @default(false) // 是否為留守人員
   createdAt        DateTime          @default(now())
@@ -44,8 +45,8 @@ model PrizePool {
 model PrizePoolMember {
   memberId    Int
   prizePoolId Int
-  member      Member    @relation(fields: [memberId], references: [id])
-  prizePool   PrizePool @relation(fields: [prizePoolId], references: [id])
+  member      Member    @relation(fields: [memberId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  prizePool   PrizePool @relation(fields: [prizePoolId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@id([memberId, prizePoolId])
 }
@@ -55,14 +56,14 @@ model CheckIn {
   id        Int      @id @default(autoincrement())
   memberId  Int
   createdAt DateTime @default(now())
-  member    Member   @relation(fields: [memberId], references: [id])
+  member    Member   @relation(fields: [memberId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 /// 獎項
 model Prize {
   id           Int           @id @default(autoincrement())
   name         String        @db.VarChar(12) // 獎項名稱
-  description  String?        @db.VarChar(32) // 獎項描述
+  description  String?       @db.VarChar(32) // 獎項描述
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   memberPrizes MemberPrize[]
@@ -73,8 +74,8 @@ model MemberPrize {
   memberId  Int
   prizeId   Int
   createdAt DateTime @default(now())
-  member    Member   @relation(fields: [memberId], references: [id])
-  prize     Prize    @relation(fields: [prizeId], references: [id])
+  member    Member   @relation(fields: [memberId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  prize     Prize    @relation(fields: [prizeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@id([memberId, prizeId])
 }

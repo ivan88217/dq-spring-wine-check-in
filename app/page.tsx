@@ -24,7 +24,7 @@ interface FindMemberResponse {
   id: number;
   code: string;
   name: string;
-  department_name: string | null;
+  departmentName: string | null;
 }
 
 export default function Home() {
@@ -210,7 +210,7 @@ export default function Home() {
               {rows.map((row, index) => (
                 <TableRow key={index} onClick={() => selectMember(row)}>
                   <TableCell className="font-medium">{row.code}</TableCell>
-                  <TableCell>{row.department_name || "無"}</TableCell>
+                  <TableCell>{row.departmentName || "無"}</TableCell>
                   <TableCell>{row.name}</TableCell>
                 </TableRow>
               ))}
