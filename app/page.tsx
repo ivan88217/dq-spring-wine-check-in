@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { MouseEventHandler, FormEventHandler } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertError } from "@/components/alert-error";
 import { getCookies, setCookie } from "@/lib/cookie-parser";
 import { edenApi } from "@/lib/api";
@@ -18,7 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Member } from "@prisma/client";
 
 interface FindMemberResponse {
   id: number;
@@ -126,19 +125,19 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (name) {
-      edenApi.api["find-member"]
-        .get({
-          $query: {
-            name,
-          },
-        })
-        .then(({ data }) => {
-          if (data) {
-            setRaws(data);
-          }
-        });
-    }
+    if (!name) setRaws([]);
+
+    edenApi.api["find-member"]
+      .get({
+        $query: {
+          name,
+        },
+      })
+      .then(({ data }) => {
+        if (data) {
+          setRaws(data);
+        }
+      });
   }, [name]);
 
   const selectMember = (member: FindMemberResponse) => {
@@ -184,13 +183,16 @@ export default function Home() {
         </Button>
         <br />
         <Label htmlFor="name">
-          以名稱搜尋<br />(於結果中選擇自己可自動填上員編)
+          以名稱搜尋
+          <br />
+          (於結果中選擇自己可自動填上員編)
         </Label>
         <Input
           id="name"
           className="m-1 text-center border-green-800 bg-gray-900"
           placeholder="請輸入名稱"
           onInput={handleNameInput}
+          disabled={alreadyChecked || onChecking}
         />
         <br />
         {rows.length > 0 ? (
