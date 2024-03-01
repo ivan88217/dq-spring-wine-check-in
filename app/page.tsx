@@ -42,8 +42,11 @@ export default function Home() {
   const [errorShown, setErrorShown] = useState(false);
   const [currentTimeoutHandler, setCurrentTimeoutHandler] =
     useState<NodeJS.Timeout | null>(null);
-
   const [onChecking, setOnChecking] = useState(false);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   useEffect(() => {
     const cookies = getCookies();
@@ -142,6 +145,7 @@ export default function Home() {
 
   const selectMember = (member: FindMemberResponse) => {
     setCode(member.code);
+    scrollToTop();
   };
 
   return (
