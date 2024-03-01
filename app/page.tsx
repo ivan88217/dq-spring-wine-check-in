@@ -149,7 +149,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between p-10">
+    <div className="flex flex-col items-center justify-between lg:p-10 md:p-6 sm:p-1">
       <Image
         src="/icon.jpg"
         alt="敦謙2024年春酒-自助簽到系統"
