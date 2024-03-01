@@ -214,7 +214,7 @@ export default function Home() {
             </TableHeader>
             <TableBody>
               {rows.map((row, index) => (
-                <TableRow key={index} onClick={() => selectMember(row)}>
+                <TableRow key={index} onClick={() => selectMember(row)} className={code == row.code ? 'bg-blue-900 hover:bg-blue-800' : ''}>
                   <TableCell className="font-medium">{row.code}</TableCell>
                   <TableCell>{row.departmentName || "無"}</TableCell>
                   <TableCell>{row.name}</TableCell>
