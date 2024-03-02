@@ -1,13 +1,11 @@
 import { Elysia, t } from "elysia";
 import prisma from "@/lib/prisma";
-import { Member, MemberPrize } from "@prisma/client";
+import { Member } from "@prisma/client";
 
 export const winPrizeController = new Elysia().post(
   "/win-prize",
   async ({ body }) => {
     const { memberCodes, prizeName } = body;
-
-    const members: Member[] = [];
 
     const existPrize = await prisma.prize.findFirst({
       where: {
@@ -39,10 +37,6 @@ export const winPrizeController = new Elysia().post(
         continue;
       }
 
-      members.push(member);
-    }
-
-    for (const member of members) {
       await prisma.member.update({
         where: {
           id: member.id,
