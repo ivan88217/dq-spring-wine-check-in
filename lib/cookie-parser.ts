@@ -16,3 +16,8 @@ export const setCookie = (name: string, value: any, expireInSecond: number) => {
   let expires = "expires=" + d.toUTCString();
   document.cookie = name + "=" + value + ";" + expires + ";path=/";
 };
+
+export const getCookie = (name: string) => {
+  const cookies = getCookies();
+  return cookies[name];
+}
