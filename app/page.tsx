@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import type { MouseEventHandler, FormEventHandler } from "react";
 import { useEffect, useState } from "react";
 import { AlertError } from "@/components/alert-error";
-import { getCookies, setCookie } from "@/lib/cookie-parser";
+import { getCookie, setCookie } from "@/lib/cookie-parser";
 import { edenApi } from "@/lib/api";
 import {
   Table,
@@ -30,6 +30,7 @@ export default function Home() {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [rows, setRaws] = useState<FindMemberResponse[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [alreadyChecked, setAlreadyChecked] = useState(false);
   const [btnText, setBtnText] = useState("簽到");
   const [error, setError] = useState<{
@@ -44,17 +45,37 @@ export default function Home() {
     useState<NodeJS.Timeout | null>(null);
   const [onChecking, setOnChecking] = useState(false);
 
+  const reset = () => {
+    setCode("");
+    setName("");
+    setRaws([]);
+    setAlreadyChecked(false);
+    setBtnText("簽到");
+    setError({
+      title: "Error",
+      text: "description",
+    });
+    setErrorShown(false);
+    if (currentTimeoutHandler) clearTimeout(currentTimeoutHandler);
+    setCurrentTimeoutHandler(null);
+    setOnChecking(false);
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+  };
 
   useEffect(() => {
-    const cookies = getCookies();
-    if (!cookies.isChecked) {
+    const admin = getCookie("admin");
+    if (admin) {
+      setIsAdmin(true);
+    }
+    const isChecked = getCookie("isChecked");
+    if (!isChecked) {
       return;
     }
     setAlreadyChecked(true);
-    setCode(cookies.isChecked);
+    setCode(isChecked);
   });
 
   const getCheckInBtnText = () => {
@@ -121,7 +142,7 @@ export default function Home() {
       return;
     }
 
-    setCookie("isChecked", code, 60 * 60);
+    if (!isAdmin) setCookie("isChecked", code, 60 * 60);
     setOnChecking(false);
     setAlreadyChecked(true);
     alert(`${code} 簽到成功`);
@@ -158,17 +179,21 @@ export default function Home() {
         height={150}
       />
       <h1 className="text-2xl font-bold text-white mt-2">敦謙2024年春酒</h1>
-      <h1 className="text-3md font-bold text-white mt-2">自助簽到系統</h1>
+      <h1 className="text-3md font-bold text-white mt-2">
+        自助簽到系統{isAdmin ? " - 管理者" : ""}
+      </h1>
       <div className="m-5 flex flex-col w-4/5 text-center justify-between p-1">
         <div>
           <AlertError
-            className="p-2 mb-3"
+            className="p-2 mb-3 text-red-500 !border-red-500"
             title={error.title}
             text={error.text}
             hidden={!errorShown}
           />
         </div>
-        <Label htmlFor="code">員工編號</Label>
+        <Label htmlFor="code" className="m-1 pl-2">
+          員工編號
+        </Label>
         <Input
           id="code"
           className="m-1 text-center bg-gray-900"
@@ -185,8 +210,19 @@ export default function Home() {
         >
           {btnText}
         </Button>
+        {isAdmin ? (
+          <Button
+            className="m-1 w-[100%]"
+            variant="outline"
+            onClick={() => {
+              reset();
+            }}
+          >
+            重置
+          </Button>
+        ) : null}
         <br />
-        <Label htmlFor="name">
+        <Label htmlFor="name" className="m-1 pl-2">
           以名稱搜尋
           <br />
           (於結果中選擇自己可自動填上員編)
@@ -197,6 +233,7 @@ export default function Home() {
           placeholder="請輸入名稱"
           onInput={handleNameInput}
           disabled={alreadyChecked || onChecking}
+          value={name}
         />
         <br />
         {rows.length > 0 ? (
@@ -214,7 +251,13 @@ export default function Home() {
             </TableHeader>
             <TableBody>
               {rows.map((row, index) => (
-                <TableRow key={index} onClick={() => selectMember(row)} className={code == row.code ? 'bg-blue-900 hover:bg-blue-800' : ''}>
+                <TableRow
+                  key={index}
+                  onClick={() => selectMember(row)}
+                  className={
+                    code == row.code ? "bg-blue-900 hover:bg-blue-800" : ""
+                  }
+                >
                   <TableCell className="font-medium">{row.code}</TableCell>
                   <TableCell>{row.departmentName || "無"}</TableCell>
                   <TableCell>{row.name}</TableCell>
