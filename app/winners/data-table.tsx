@@ -56,7 +56,7 @@ export function DataTable<TData, TValue>({
         </Label>
         <Input
           id={column}
-          placeholder={title}
+          placeholder={`請輸入${title}`}
           value={(table.getColumn(column)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn(column)?.setFilterValue(event.target.value)
