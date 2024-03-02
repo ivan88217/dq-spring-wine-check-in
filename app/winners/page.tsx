@@ -3,7 +3,11 @@ import { DataTable } from "./data-table";
 import { Winner, columns } from "./columns";
 
 async function getData(): Promise<Winner[]> {
-  const { data } = await edenApi.api["get-winners"].get();
+  const { data } = await edenApi.api["get-winners"].get({
+    $fetch: {
+      cache: "no-cache"
+    }
+  });
   if (!data) return [];
   return data;
 }
