@@ -1,10 +1,10 @@
 import { Elysia, t } from "elysia";
-import { isCheckedController } from "./is-checked";
-import { checkInController } from "./check-in";
-import { findMemberController } from "./find-member";
-import { getMembersController } from "./get-members";
-import { winPrizeController } from "./win-prize";
-import { getWinnersController } from "./get-winners";
+import { isCheckedController } from "@/controllers/is-checked";
+import { checkInController } from "@/controllers/check-in";
+import { findMemberController } from "@/controllers/find-member";
+import { getMembersController } from "@/controllers/get-members";
+import { winPrizeController } from "@/controllers/win-prize";
+import { getWinnersController } from "@/controllers/get-winners";
 
 const app = new Elysia({ prefix: "/api" })
   .use(winPrizeController)
