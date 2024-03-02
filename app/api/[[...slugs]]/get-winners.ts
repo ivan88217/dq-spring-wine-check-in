@@ -19,6 +19,11 @@ export const getWinnersController = new Elysia().get(
           },
         }
       },
+      orderBy: {
+        prize: {
+          id: "desc",
+        },
+      },
     });
 
     // 名稱第二字需要隱藏，例如：王小明 -> 王*明
