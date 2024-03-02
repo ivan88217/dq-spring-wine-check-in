@@ -5,51 +5,41 @@ import { Member } from "@prisma/client";
 export const winPrizeController = new Elysia().post(
   "/win-prize",
   async ({ body }) => {
-    const { memberCodes, prizeName } = body;
+		const { memberCodes, prizeName } = body;
 
-    const existPrize = await prisma.prize.findFirst({
-      where: {
-        name: prizeName,
-      },
-    });
-    const prize =
-      existPrize || (await prisma.prize.create({ data: { name: prizeName } }));
+		const existedPrize = await prisma.prize.findFirst({ where: { name: prizeName } });
 
-    for (const code of memberCodes) {
-      const member = await prisma.member.findFirst({
-        where: {
-          code,
-        },
-        include: {
-          memberPrizes: true,
-        },
-      });
+		const prize = existedPrize || (await prisma.prize.create({ data: { name: prizeName } }));
 
-      if (!member) {
-        throw new Error(`找不到員工 ${code}`);
-      }
+		const members = await prisma.member.findMany({
+			where: { code: { in: memberCodes } },
+			include: { memberPrizes: true },
+		});
 
-      if (
-        member.memberPrizes.some(
-          (memberPrize) => memberPrize.prizeId === prize.id
-        )
-      ) {
-        continue;
-      }
+		const foundMemberCodes = members.map((member) => member.code);
 
-      await prisma.member.update({
-        where: {
-          id: member.id,
-        },
-        data: {
-          memberPrizes: {
-            create: {
-              prizeId: prize.id,
-            },
-          },
-        },
-      });
-    }
+		const notFoundMemberCodes = memberCodes.filter((memberCode) => !foundMemberCodes.includes(memberCode));
+
+		if (notFoundMemberCodes.length !== 0) {
+			throw new Error(`找不到員工們：${notFoundMemberCodes}`);
+		}
+
+		const prizeNotObtainedMembers = members.filter((member) =>
+			!member.memberPrizes.some((memberPrize) => memberPrize.prizeId === prize.id)
+		);
+
+    console.log(members, prizeNotObtainedMembers);
+
+		for (const member of prizeNotObtainedMembers) {
+			await prisma.member.update({
+				where: { id: member.id },
+				data: {
+					memberPrizes: {
+						create: { prizeId: prize.id },
+					},
+				},
+			});
+		}
 
     return "ok";
   },
