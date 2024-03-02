@@ -30,7 +30,7 @@ model Member {
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @default(now()) @updatedAt
   prizePoolMembers PrizePoolMember[]
-  checkIns         CheckIn[]
+  checkIn          CheckIn?
   memberPrizes     MemberPrize[]
 }
 
@@ -49,8 +49,8 @@ model PrizePoolMember {
   prizePoolId Int
   member      Member    @relation(fields: [memberId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   prizePool   PrizePool @relation(fields: [prizePoolId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @default(now()) @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
 
   @@id([memberId, prizePoolId])
 }
@@ -58,9 +58,9 @@ model PrizePoolMember {
 /// 簽到表
 model CheckIn {
   id        Int      @id @default(autoincrement())
-  memberId  Int
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @default(now()) @updatedAt
+  memberId  Int      @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   member    Member   @relation(fields: [memberId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
