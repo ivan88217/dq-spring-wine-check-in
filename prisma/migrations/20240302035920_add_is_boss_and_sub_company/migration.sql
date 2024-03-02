@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `Member` ADD COLUMN `isBoss` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `isSubCompany` BOOLEAN NOT NULL DEFAULT false;
