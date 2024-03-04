@@ -1,20 +1,36 @@
-import { edenApi } from "@/lib/api";
 import { DataTable } from "./data-table";
 import { Winner, columns } from "./columns";
+import prisma from "@/lib/prisma";
 
 async function getData(): Promise<Winner[]> {
-  try {
-    const { data } = await edenApi.api["get-winners"].get({
-      $fetch: {
-        cache: "no-cache",
+  const winners = await prisma.memberPrize.findMany({
+    include: {
+      member: {
+        select: {
+          code: true,
+          name: true,
+          departmentName: true,
+        },
       },
-    });
-    if (!data) return [];
-    return data;
-  } catch (e) {
-    console.error(e);
-    return [];
-  }
+      prize: {
+        select: {
+          name: true,
+        },
+      }
+    },
+    orderBy: {
+      prize: {
+        id: "desc",
+      },
+    },
+  });
+
+  return winners.map((winner) => ({
+    code: winner.member.code,
+    name: winner.member.name.replace(/(?<=^.{1})./g, "*"),
+    departmentName: winner.member.departmentName,
+    prize: winner.prize.name,
+  }));
 }
 
 export default async function Winners() {
