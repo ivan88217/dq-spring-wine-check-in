@@ -3,17 +3,22 @@ import { DataTable } from "./data-table";
 import { Winner, columns } from "./columns";
 
 async function getData(): Promise<Winner[]> {
-  const { data } = await edenApi.api["get-winners"].get({
-    $fetch: {
-      cache: "no-cache"
-    }
-  });
-  if (!data) return [];
-  return data;
+  try {
+    const { data } = await edenApi.api["get-winners"].get({
+      $fetch: {
+        cache: "no-cache",
+      },
+    });
+    if (!data) return [];
+    return data;
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
 }
 
 export default async function Winners() {
-  const data = await getData()
+  const data = await getData();
 
   return (
     <div className="flex flex-col items-center justify-between lg:p-10 md:p-6 sm:p-1">
