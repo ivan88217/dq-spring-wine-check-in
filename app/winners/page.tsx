@@ -1,8 +1,10 @@
 import { DataTable } from "./data-table";
 import { Winner, columns } from "./columns";
 import prisma from "@/lib/prisma";
+import { unstable_noStore as noStore } from 'next/cache';
 
 async function getData(): Promise<Winner[]> {
+  noStore();
   const winners = await prisma.memberPrize.findMany({
     include: {
       member: {
