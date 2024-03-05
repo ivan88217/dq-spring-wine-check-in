@@ -9,6 +9,7 @@ export const getMembersController = new Elysia().get(
         code: true,
         name: true,
         departmentName: true,
+        years: true,
       },
       where: {
         isAttend: query.isAttend,
@@ -40,6 +41,7 @@ export const getMembersController = new Elysia().get(
         code: t.String(),
         name: t.String(),
         departmentName: t.Nullable(t.String()),
+        years: t.Number(),
       })
     ),
     error({ error }) {
