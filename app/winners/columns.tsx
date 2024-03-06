@@ -28,6 +28,7 @@ const sortableHeader = (header: string, column: Column<Winner, any>) => {
 export const columns: ColumnDef<Winner>[] = [
   {
     accessorKey: "prize",
+    filterFn: (rows, name, value) => (rows.getValue(name) as string).toLowerCase() == value.toLowerCase(),
     header: ({ column }) => {
       return sortableHeader("獎項", column);
     },
