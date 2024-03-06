@@ -44,6 +44,7 @@ export default function Home() {
   const [currentTimeoutHandler, setCurrentTimeoutHandler] =
     useState<NodeJS.Timeout | null>(null);
   const [onChecking, setOnChecking] = useState(false);
+  const abortController = new AbortController();
 
   const reset = () => {
     setCode("");
@@ -109,6 +110,7 @@ export default function Home() {
   };
 
   const handleNameInput: FormEventHandler<HTMLInputElement> = (e) => {
+    abortController.abort("next request");
     setName(e.currentTarget.value);
   };
 
@@ -156,11 +158,15 @@ export default function Home() {
         $query: {
           name,
         },
+        $fetch: { signal: abortController.signal },
       })
       .then(({ data }) => {
         if (data) {
           setRaws(data);
         }
+      })
+      .catch((err) => {
+        console.error(err);
       });
   }, [name]);
 
