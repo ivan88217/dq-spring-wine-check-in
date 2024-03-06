@@ -74,6 +74,7 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4 sm:flex-row flex-col">
+        {SearchInput("prize", "獎項")}
         {SearchInput("code", "員工編號")}
         {SearchInput("name", "姓名")}
         {SearchInput("departmentName", "部門")}
