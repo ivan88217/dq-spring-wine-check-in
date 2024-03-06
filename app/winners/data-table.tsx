@@ -22,6 +22,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Combobox } from "./combobox";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -67,6 +68,31 @@ export function DataTable<TData, TValue>({
     );
   };
 
+  const SearchableSelect = (column: string, title: string) => {
+    const items = data.map((r: any) => r[column] as string) ?? [];
+
+    const prizeNames = [...new Set(items)];
+
+    return (
+      <div className="flex flex-col items-start p-1">
+        <Label htmlFor="prizeNames" className="m-1 pl-2">
+          {title}
+        </Label>
+        <Combobox
+          data={prizeNames.map((name) => ({
+            value: name.toLowerCase(),
+            label: name,
+          }))}
+          title={title}
+          onValueChange={(value) => {
+            table.getColumn(column)?.setFilterValue(value);
+          }}
+          value={(table.getColumn(column)?.getFilterValue() as string) ?? ""}
+        />
+      </div>
+    );
+  };
+
   const reset = () => {
     table.resetColumnFilters();
   };
@@ -74,11 +100,15 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4 sm:flex-row flex-col">
-        {SearchInput("prize", "獎項")}
+        {SearchableSelect("prize", "獎項")}
         {SearchInput("code", "員工編號")}
         {SearchInput("name", "姓名")}
         {SearchInput("departmentName", "部門")}
-        <Button onClick={reset} className="m-1 ml-auto mt-auto" variant={"outline"}>
+        <Button
+          onClick={reset}
+          className="m-1 ml-auto mt-auto"
+          variant={"outline"}
+        >
           清除條件
         </Button>
       </div>
