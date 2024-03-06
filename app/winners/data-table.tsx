@@ -78,7 +78,7 @@ export function DataTable<TData, TValue>({
         {SearchInput("name", "姓名")}
         {SearchInput("departmentName", "部門")}
         <Button onClick={reset} className="m-1 ml-auto mt-auto" variant={"outline"}>
-          清除
+          清除條件
         </Button>
       </div>
       <div className="rounded-md border">
