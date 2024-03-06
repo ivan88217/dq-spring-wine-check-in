@@ -104,6 +104,17 @@ export function DataTable<TData, TValue>({
     table.resetColumnFilters();
   };
 
+  const handleRefresh = () => {
+    if (currentTimeoutHandler) clearTimeout(currentTimeoutHandler);
+    setCurrentTimeoutHandler(null);
+    setRefresh(true);
+    const timeoutHandler = setTimeout(() => {
+      setRefresh(false);
+    }, 1000);
+    setCurrentTimeoutHandler(timeoutHandler);
+    router.refresh();
+  }
+
   return (
     <div>
       <div className="flex items-end py-4 justify-between flex-col lg:flex-row">
@@ -122,16 +133,7 @@ export function DataTable<TData, TValue>({
               size={18}
               className={refresh ? "animate-spin" : ""}
               color="green"
-              onClick={() => {
-                if (currentTimeoutHandler) clearTimeout(currentTimeoutHandler);
-                setCurrentTimeoutHandler(null);
-                setRefresh(true);
-                const timeoutHandler = setTimeout(() => {
-                  setRefresh(false);
-                }, 1000);
-                setCurrentTimeoutHandler(timeoutHandler);
-                router.refresh();
-              }}
+              onClick={handleRefresh}
             />
           </Button>
         </div>
