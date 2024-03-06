@@ -225,7 +225,7 @@ export default function Home() {
               reset();
             }}
           >
-            重置
+            下一位
           </Button>
         ) : null}
         <br />
