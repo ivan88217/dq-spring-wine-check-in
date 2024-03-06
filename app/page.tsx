@@ -70,6 +70,7 @@ export default function Home() {
     const admin = getCookie("admin");
     if (admin) {
       setIsAdmin(true);
+      return;
     }
     const isChecked = getCookie("isChecked");
     if (!isChecked) {
