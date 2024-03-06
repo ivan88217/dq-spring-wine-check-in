@@ -29,13 +29,7 @@ export interface ComboboxProps {
   onValueChange: (value: string) => void;
 }
 
-export function Combobox({
-  data,
-  title,
-  value,
-  onValueChange,
-  ...props
-}: ComboboxProps) {
+export function Combobox({ data, title, value, onValueChange }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState("");
 
@@ -48,7 +42,7 @@ export function Combobox({
   }, [value]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen} {...props}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"

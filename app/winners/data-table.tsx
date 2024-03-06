@@ -59,7 +59,7 @@ export function DataTable<TData, TValue>({
   const SearchInput = (column: string, title: string) => {
     return (
       <div className="flex flex-col items-start px-1 justify-end">
-        <Label htmlFor="code" className="m-1 pl-2">
+        <Label htmlFor={column} className="m-1 pl-2">
           {title}
         </Label>
         <Input
@@ -82,7 +82,7 @@ export function DataTable<TData, TValue>({
 
     return (
       <div className="flex flex-col items-start px-1 justify-end">
-        <Label htmlFor="prizeNames" className="m-1 pl-2">
+        <Label htmlFor={column} className="m-1 pl-2">
           {title}
         </Label>
         <Combobox
@@ -113,7 +113,7 @@ export function DataTable<TData, TValue>({
     }, 1000);
     setCurrentTimeoutHandler(timeoutHandler);
     router.refresh();
-  }
+  };
 
   return (
     <div>
@@ -124,7 +124,7 @@ export function DataTable<TData, TValue>({
           {SearchInput("name", "姓名")}
           {SearchInput("departmentName", "部門")}
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <Button onClick={reset} variant={"outline"} className="bg-red-800">
             清除條件
           </Button>
