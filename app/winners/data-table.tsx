@@ -18,12 +18,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Combobox } from "./combobox";
-import { RefreshCw } from "lucide-react";
+import { RefreshCcw } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,6 +36,10 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const router = useRouter();
+  const [refresh, setRefresh] = useState(false);
+  const [currentTimeoutHandler, setCurrentTimeoutHandler] =
+    useState<NodeJS.Timeout | null>(null);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useReactTable({
@@ -100,21 +106,31 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-end py-4 justify-between">
-        <div className="flex">
+      <div className="flex items-end py-4 justify-between flex-col lg:flex-row">
+        <div className="flex flex-col lg:flex-row">
           {SearchableSelect("prize", "獎項")}
           {SearchInput("code", "員工編號")}
           {SearchInput("name", "姓名")}
           {SearchInput("departmentName", "部門")}
         </div>
         <div className="flex items-center gap-4">
-          <Button onClick={reset} variant={"outline"}>
+          <Button onClick={reset} variant={"outline"} className="bg-red-800">
             清除條件
           </Button>
-          <Button variant={"outline"}>
-            <RefreshCw
+          <Button variant={"outline"} className="bg-gray-900">
+            <RefreshCcw
+              size={18}
+              className={refresh ? "animate-spin" : ""}
+              color="green"
               onClick={() => {
-                table.resetColumnFilters();
+                if (currentTimeoutHandler) clearTimeout(currentTimeoutHandler);
+                setCurrentTimeoutHandler(null);
+                setRefresh(true);
+                const timeoutHandler = setTimeout(() => {
+                  setRefresh(false);
+                }, 1000);
+                setCurrentTimeoutHandler(timeoutHandler);
+                router.refresh();
               }}
             />
           </Button>

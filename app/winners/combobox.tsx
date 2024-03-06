@@ -55,7 +55,7 @@ export function Combobox({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-[200px] justify-between",
+            "justify-between w-[212px]",
             selected ? "" : "text-gray-400"
           )}
         >
@@ -65,7 +65,7 @@ export function Combobox({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="p-0">
         <Command>
           <CommandInput placeholder={`找尋${title}...`} />
           <CommandEmpty>找不到選項</CommandEmpty>
