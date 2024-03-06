@@ -54,7 +54,10 @@ export function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className={cn(
+            "w-[200px] justify-between",
+            selected ? "" : "text-gray-400"
+          )}
         >
           {selected
             ? data.find((row) => row.value === selected)?.label

@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Combobox } from "./combobox";
+import { RefreshCw } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -51,7 +52,7 @@ export function DataTable<TData, TValue>({
 
   const SearchInput = (column: string, title: string) => {
     return (
-      <div className="flex flex-col items-start p-1">
+      <div className="flex flex-col items-start px-1 justify-end">
         <Label htmlFor="code" className="m-1 pl-2">
           {title}
         </Label>
@@ -74,7 +75,7 @@ export function DataTable<TData, TValue>({
     const prizeNames = [...new Set(items)];
 
     return (
-      <div className="flex flex-col items-start p-1">
+      <div className="flex flex-col items-start px-1 justify-end">
         <Label htmlFor="prizeNames" className="m-1 pl-2">
           {title}
         </Label>
@@ -99,18 +100,25 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4 sm:flex-row flex-col">
-        {SearchableSelect("prize", "獎項")}
-        {SearchInput("code", "員工編號")}
-        {SearchInput("name", "姓名")}
-        {SearchInput("departmentName", "部門")}
-        <Button
-          onClick={reset}
-          className="m-1 ml-auto mt-auto"
-          variant={"outline"}
-        >
-          清除條件
-        </Button>
+      <div className="flex items-end py-4 justify-between">
+        <div className="flex">
+          {SearchableSelect("prize", "獎項")}
+          {SearchInput("code", "員工編號")}
+          {SearchInput("name", "姓名")}
+          {SearchInput("departmentName", "部門")}
+        </div>
+        <div className="flex items-center gap-4">
+          <Button onClick={reset} variant={"outline"}>
+            清除條件
+          </Button>
+          <Button variant={"outline"}>
+            <RefreshCw
+              onClick={() => {
+                table.resetColumnFilters();
+              }}
+            />
+          </Button>
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>
