@@ -125,10 +125,10 @@ export function DataTable<TData, TValue>({
           {SearchInput("departmentName", "部門")}
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={reset} variant={"outline"} className="bg-red-800">
+          <Button onClick={reset} variant={"outline"} className="bg-red-900">
             清除條件
           </Button>
-          <Button variant={"outline"} className="bg-gray-900">
+          <Button variant={"secondary"} className="bg-gray-900 py-0 px-2">
             <RefreshCcw
               size={18}
               className={refresh ? "animate-spin" : ""}
