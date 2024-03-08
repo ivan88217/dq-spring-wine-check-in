@@ -131,6 +131,11 @@ export default function Home() {
       return;
     }
 
+    if (birthday.length !== 4) {
+      errorShow("輸入錯誤", "生日格式錯誤");
+      return;
+    }
+
     setOnChecking(true);
 
     const checkInRes = await edenApi.api["check-in"].post({
