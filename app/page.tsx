@@ -224,17 +224,9 @@ export default function Home() {
         </Label>
         <Input
           type="date"
-          className="m-1 text-center bg-gray-900"
+          className="m-1 bg-gray-900 text-center block"
           value={birthday ? format(birthday, "yyyy-MM-dd") : undefined}
-          placeholder="請選擇生日"
           onChange={(e) => setBirthday(new Date(e.currentTarget.value))}
-          disabled={alreadyChecked || onChecking}
-        />
-        <DatePicker
-          className="m-1 text-center bg-gray-900"
-          date={birthday}
-          onDateChange={setBirthday}
-          placeholder="請選擇生日"
           disabled={alreadyChecked || onChecking}
         />
         <Button
