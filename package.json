@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "pm2": "next build && pm2 start"
+    "sync-db-schema": "bunx prisma generate",
+    "pm2": "bun run sync-db-schema && next build && pm2 start"
   },
   "dependencies": {
     "@elysiajs/eden": "^0.8.1",
