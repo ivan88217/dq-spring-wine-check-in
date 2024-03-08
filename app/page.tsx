@@ -90,7 +90,7 @@ export default function Home() {
 
   const getCheckInBtnText = () => {
     if (alreadyChecked) {
-      const seat = seatNumber ? `桌次: ${seatNumber}` : "尚未分配桌次";
+      const seat = seatNumber ? `桌次: ${seatNumber}桌` : "尚未分配桌次";
       return `${name} 簽到成功 ${seat}`;
     }
     if (onChecking) return `正在簽到中`;
@@ -241,7 +241,6 @@ export default function Home() {
         </Label>
         <Input
           id="birthday"
-          type="number"
           placeholder="請輸入生日(月日) ex. 0523"
           className="m-1 bg-gray-900 text-center block appearance-none"
           value={birthday}
