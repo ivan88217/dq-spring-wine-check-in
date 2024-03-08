@@ -26,7 +26,8 @@ export const checkInController = new Elysia().post(
     });
 
     if (isChecked) {
-      throw new Error(`${user.name}您好，您已經簽到過了，桌次是 ${user.seatNumber}桌`);
+      const seatContent = user.seatNumber ? `桌次是 ${user.seatNumber}桌` : "尚未分配桌次，請洽詢接待人員";
+      throw new Error(`來賓 ${user.name} 您好，您已經簽到過了，${seatContent}`);
     }
 
     const checkIn = await prisma.checkIn.create({

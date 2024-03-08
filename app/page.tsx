@@ -90,7 +90,7 @@ export default function Home() {
 
   const getCheckInBtnText = () => {
     if (alreadyChecked) {
-      const seat = seatNumber ? `桌次: ${seatNumber}桌` : "尚未分配桌次";
+      const seat = seatNumber ? `桌次: ${seatNumber}桌` : "尚未分配桌次，請洽詢接待人員";
       return `${name} 簽到成功 ${seat}`;
     }
     if (onChecking) return `正在簽到中`;
