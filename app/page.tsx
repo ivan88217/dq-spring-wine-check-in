@@ -222,7 +222,14 @@ export default function Home() {
         <Label htmlFor="birthday" className="m-1 pl-2">
           生日
         </Label>
-        {/* <Input type="date"></Input> */}
+        <Input
+          type="date"
+          className="m-1 text-center bg-gray-900"
+          value={birthday ? format(birthday, "yyyy-MM-dd") : undefined}
+          placeholder="請選擇生日"
+          onChange={(e) => setBirthday(new Date(e.currentTarget.value))}
+          disabled={alreadyChecked || onChecking}
+        />
         <DatePicker
           className="m-1 text-center bg-gray-900"
           date={birthday}
