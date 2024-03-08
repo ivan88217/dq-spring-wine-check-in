@@ -26,7 +26,7 @@ export const checkInController = new Elysia().post(
     });
 
     if (isChecked) {
-      throw new Error(`${user.code} 已經簽到過了`);
+      throw new Error(`${user.code} 已經簽到過了 您的桌次是 ${user.seatNumber}`);
     }
 
     const checkIn = await prisma.checkIn.create({
