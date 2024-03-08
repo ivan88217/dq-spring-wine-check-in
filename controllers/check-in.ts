@@ -15,9 +15,13 @@ export const checkInController = new Elysia().post(
       throw new Error("找不到此員工編號");
     }
 
-    if(user.birthday && format(user.birthday, "MMdd") !== body.birthday) {
-      throw new Error("生日錯誤");
+    if (user.birthday && format(user.birthday, "MMdd") !== body.birthday) {
+      throw new Error("輸入的生日有誤");
     }
+
+    // if (!user.isAttend) {
+    //   throw new Error(`來賓${user.name}您好，您未報名參加活動，請洽詢接待人員`);
+    // }
 
     const isChecked = await prisma.checkIn.findFirst({
       where: {
@@ -26,7 +30,9 @@ export const checkInController = new Elysia().post(
     });
 
     if (isChecked) {
-      const seatContent = user.seatNumber ? `桌次是 ${user.seatNumber}桌` : "尚未分配桌次，請洽詢接待人員";
+      const seatContent = user.seatNumber
+        ? `桌次是 ${user.seatNumber}桌`
+        : "尚未分配桌次，請洽詢接待人員";
       throw new Error(`來賓 ${user.name} 您好，您已經簽到過了，${seatContent}`);
     }
 
