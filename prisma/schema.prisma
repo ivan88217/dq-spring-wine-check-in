@@ -21,7 +21,7 @@ model Member {
   code             String            @db.VarChar(32) // 員工編號
   years            Float // 工作年資
   email            String?           @db.VarChar(128) // 電子郵件
-  birthday         DateTime? // 生日
+  birthday         DateTime?         @db.Date() // 生日 
   departmentCode   String?           @db.VarChar(16) // 部門代碼
   departmentName   String?           @db.VarChar(32) // 部門名稱
   isAttend         Boolean           @default(false) // 是否出席春酒
