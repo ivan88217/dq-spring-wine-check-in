@@ -78,7 +78,7 @@ export function DataTable<TData, TValue>({
   const SearchableSelect = (column: string, title: string) => {
     const items = data.map((r: any) => r[column] as string) ?? [];
 
-    const prizeNames = [...new Set(items)];
+    const sets = [...new Set(items)];
 
     return (
       <div className="flex flex-col items-start px-1 justify-end">
@@ -86,7 +86,7 @@ export function DataTable<TData, TValue>({
           {title}
         </Label>
         <Combobox
-          data={prizeNames.map((name) => ({
+          data={sets.map((name) => ({
             value: name.toLowerCase(),
             label: name,
           }))}
@@ -122,7 +122,7 @@ export function DataTable<TData, TValue>({
           {SearchableSelect("prize", "獎項")}
           {SearchInput("code", "員工編號")}
           {SearchInput("name", "姓名")}
-          {SearchInput("departmentName", "部門")}
+          {SearchableSelect("departmentName", "部門")}
         </div>
         <div className="flex items-center gap-2">
           <Button onClick={reset} variant={"outline"} className="bg-red-900">
