@@ -31,7 +31,7 @@ interface FindMemberResponse {
 
 export default function Home() {
   const [code, setCode] = useState("");
-  const [birthday, setBirthday] = useState<Date>();
+  const [birthday, setBirthday] = useState("");
   const [name, setName] = useState("");
   const [rows, setRaws] = useState<FindMemberResponse[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -53,7 +53,7 @@ export default function Home() {
   const reset = () => {
     setCode("");
     setName("");
-    setBirthday(undefined);
+    setBirthday("");
     setRaws([]);
     setAlreadyChecked(false);
     setBtnText("簽到");
@@ -133,21 +133,9 @@ export default function Home() {
 
     setOnChecking(true);
 
-    const isCheckedRes = await edenApi.api["is-checked"].get({
-      $query: {
-        code,
-        birthday: format(birthday, "yyyy-MM-dd"),
-      },
-    });
-
-    if (isCheckedRes.error) {
-      errorShow("錯誤", isCheckedRes.error.value);
-      setOnChecking(false);
-      return;
-    }
-
     const checkInRes = await edenApi.api["check-in"].post({
       code,
+      birthday,
     });
 
     if (checkInRes.error) {
@@ -221,26 +209,17 @@ export default function Home() {
           value={code}
         />
         <Label htmlFor="birthday" className="m-1 pl-2">
-          生日
+          生日(請輸入月日 例: 0523)
         </Label>
-        {isDesktop ? (
-          <DatePicker
-            className="m-1 bg-gray-900 text-center"
-            date={birthday}
-            onDateChange={setBirthday}
-            placeholder="請選擇生日"
-            disabled={alreadyChecked || onChecking}
-          />
-        ) : (
-          <Input
-            type="date"
-            placeholder="請選擇生日"
-            className="m-1 bg-gray-900 text-center block appearance-none"
-            value={birthday ? format(birthday, "yyyy-MM-dd") : undefined}
-            onChange={(e) => setBirthday(new Date(e.currentTarget.value))}
-            disabled={alreadyChecked || onChecking}
-          />
-        )}
+        <Input
+          id="birthday"
+          type="number"
+          placeholder="請輸入生日(月日) ex. 0523"
+          className="m-1 bg-gray-900 text-center block appearance-none"
+          value={birthday}
+          onChange={(e) => setBirthday(e.currentTarget.value)}
+          disabled={alreadyChecked || onChecking}
+        />
         <Button
           className="m-1 w-[100%]"
           variant="secondary"

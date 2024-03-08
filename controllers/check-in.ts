@@ -1,5 +1,6 @@
 import { Elysia, t } from "elysia";
 import prisma from "@/lib/prisma";
+import { format } from "date-fns";
 
 export const checkInController = new Elysia().post(
   "/check-in",
@@ -12,6 +13,10 @@ export const checkInController = new Elysia().post(
 
     if (!user) {
       throw new Error("找不到此員工編號");
+    }
+
+    if(user.birthday && format(user.birthday, "MMdd") !== body.birthday) {
+      throw new Error("生日錯誤");
     }
 
     const isChecked = await prisma.checkIn.findFirst({
@@ -39,6 +44,7 @@ export const checkInController = new Elysia().post(
   {
     body: t.Object({
       code: t.String(),
+      birthday: t.String(),
     }),
     response: t.Boolean(),
     error({ error }) {
