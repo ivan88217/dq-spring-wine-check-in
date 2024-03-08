@@ -18,9 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DatePicker } from "@/components/date-picker";
-import { format } from "date-fns";
-import { isDesktop } from "react-device-detect";
 
 interface FindMemberResponse {
   id: number;
