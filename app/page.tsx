@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/table";
 import { DatePicker } from "@/components/date-picker";
 import { format } from "date-fns";
+import { isDesktop } from "react-device-detect";
 
 interface FindMemberResponse {
   id: number;
@@ -222,13 +223,23 @@ export default function Home() {
         <Label htmlFor="birthday" className="m-1 pl-2">
           生日
         </Label>
-        <Input
-          type="date"
-          className="m-1 bg-gray-900 text-center block"
-          value={birthday ? format(birthday, "yyyy-MM-dd") : undefined}
-          onChange={(e) => setBirthday(new Date(e.currentTarget.value))}
-          disabled={alreadyChecked || onChecking}
-        />
+        {isDesktop ? (
+          <DatePicker
+            className="m-1 bg-gray-900 text-center"
+            date={birthday}
+            onDateChange={setBirthday}
+            placeholder="請選擇生日"
+            disabled={alreadyChecked || onChecking}
+          />
+        ) : (
+          <Input
+            type="date"
+            className="m-1 bg-gray-900 text-center block"
+            value={birthday ? format(birthday, "yyyy-MM-dd") : undefined}
+            onChange={(e) => setBirthday(new Date(e.currentTarget.value))}
+            disabled={alreadyChecked || onChecking}
+          />
+        )}
         <Button
           className="m-1 w-[100%]"
           variant="secondary"
