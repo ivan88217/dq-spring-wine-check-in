@@ -305,7 +305,7 @@ export default function Home() {
                 >
                   <TableCell className="font-medium">{row.code}</TableCell>
                   <TableCell>{row.departmentName || "無"}</TableCell>
-                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.name.replace(/(?<=^.{1})./g, "*")}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
