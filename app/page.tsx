@@ -32,7 +32,7 @@ interface FindMemberResponse {
 export default function Home() {
   const [code, setCode] = useState("");
   const [birthday, setBirthday] = useState("");
-  const [name, setName] = useState("");
+  const [selectedName, setSelectedName] = useState("");
   const [rows, setRaws] = useState<FindMemberResponse[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [alreadyChecked, setAlreadyChecked] = useState(false);
@@ -48,11 +48,14 @@ export default function Home() {
   const [currentTimeoutHandler, setCurrentTimeoutHandler] =
     useState<NodeJS.Timeout | null>(null);
   const [onChecking, setOnChecking] = useState(false);
+  const [name, setName] = useState("");
+  const [seatNumber, setSeatNumber] = useState<string | null>(null);
+
   const abortController = new AbortController();
 
   const reset = () => {
     setCode("");
-    setName("");
+    setSelectedName("");
     setBirthday("");
     setRaws([]);
     setAlreadyChecked(false);
@@ -81,12 +84,15 @@ export default function Home() {
     if (!isChecked) {
       return;
     }
-    setAlreadyChecked(true);
     setCode(isChecked);
+    setAlreadyChecked(true);
   });
 
   const getCheckInBtnText = () => {
-    if (alreadyChecked) return `簽到成功`;
+    if (alreadyChecked) {
+      const seat = seatNumber ? `桌次: ${seatNumber}` : "尚未分配桌次";
+      return `${name} 簽到成功 ${seat}`;
+    }
     if (onChecking) return `正在簽到中`;
     return "簽到";
   };
@@ -97,7 +103,24 @@ export default function Home() {
     if (text === btnText) return;
 
     setBtnText(text);
-  }, [alreadyChecked, onChecking, code]);
+  }, [alreadyChecked, onChecking, code, name, seatNumber]);
+
+  useEffect(() => {
+    if (alreadyChecked && code) {
+      edenApi.api["get-member-detail"]
+        .get({
+          $query: {
+            code,
+          },
+        })
+        .then(({ data }) => {
+          if (data) {
+            setName(data.name);
+            setSeatNumber(data.seatNumber);
+          }
+        });
+    }
+  }, [code, alreadyChecked]);
 
   const errorShow = (title: string, text?: string) => {
     setError({
@@ -117,7 +140,7 @@ export default function Home() {
 
   const handleNameInput: FormEventHandler<HTMLInputElement> = (e) => {
     abortController.abort("next request");
-    setName(e.currentTarget.value);
+    setSelectedName(e.currentTarget.value);
   };
 
   const handleSubmit: MouseEventHandler<HTMLButtonElement> = async (e) => {
@@ -156,12 +179,12 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (!name) setRaws([]);
+    if (!selectedName) setRaws([]);
 
     edenApi.api["find-member"]
       .get({
         $query: {
-          name,
+          name: selectedName,
         },
         $fetch: { signal: abortController.signal },
       })
@@ -173,7 +196,7 @@ export default function Home() {
       .catch((err) => {
         console.error(err);
       });
-  }, [name]);
+  }, [selectedName]);
 
   const selectMember = (member: FindMemberResponse) => {
     setCode(member.code);
@@ -256,7 +279,7 @@ export default function Home() {
           placeholder="請輸入名稱"
           onInput={handleNameInput}
           disabled={alreadyChecked || onChecking}
-          value={name}
+          value={selectedName}
         />
         <br />
         {rows.length > 0 ? (

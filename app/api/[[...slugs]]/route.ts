@@ -5,8 +5,10 @@ import { findMemberController } from "@/controllers/find-member";
 import { getMembersController } from "@/controllers/get-members";
 import { winPrizeController } from "@/controllers/win-prize";
 import { getWinnersController } from "@/controllers/get-winners";
+import { getMemberDetailController } from "@/controllers/get-member-detail";
 
 const app = new Elysia({ prefix: "/api" })
+  .use(getMemberDetailController)
   .use(winPrizeController)
   .use(isCheckedController)
   .use(checkInController)
