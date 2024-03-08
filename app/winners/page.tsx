@@ -35,7 +35,7 @@ async function getData(): Promise<Winner[]> {
 
   return winners.map((winner) => ({
     code: winner.member.code,
-    name: winner.member.name.replace(/(?<=^.{1})./g, "*"),
+    name: winner.member.name,
     departmentName: winner.member.departmentName,
     prize: winner.prize.name,
   }));

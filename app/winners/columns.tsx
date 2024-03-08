@@ -28,7 +28,8 @@ const sortableHeader = (header: string, column: Column<Winner, any>) => {
 export const columns: ColumnDef<Winner>[] = [
   {
     accessorKey: "prize",
-    filterFn: (rows, name, value) => (rows.getValue(name) as string).toLowerCase() == value.toLowerCase(),
+    filterFn: (rows, name, value) =>
+      (rows.getValue(name) as string).toLowerCase() == value.toLowerCase(),
     header: ({ column }) => {
       return sortableHeader("獎項", column);
     },
@@ -41,9 +42,13 @@ export const columns: ColumnDef<Winner>[] = [
   },
   {
     accessorKey: "name",
+    filterFn: (rows, name, value) => {
+      return rows.original.name.includes(value);
+    },
     header: ({ column }) => {
       return sortableHeader("姓名", column);
     },
+    accessorFn: ({ name }) => (name ? name.replace(/(?<=^.{1})./g, "*") : ""),
   },
   {
     accessorKey: "departmentName",
