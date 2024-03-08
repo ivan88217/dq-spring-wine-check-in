@@ -7,6 +7,7 @@ export const isCheckedController = new Elysia().get(
     const user = await prisma.member.findFirst({
       where: {
         code: query.code,
+        birthday: query.birthday,
       },
     });
 
@@ -25,6 +26,7 @@ export const isCheckedController = new Elysia().get(
   {
     query: t.Object({
       code: t.String(),
+      birthday: t.String(),
     }),
     response: t.Boolean(),
     error({ error }) {

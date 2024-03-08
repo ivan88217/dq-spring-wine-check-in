@@ -28,6 +28,7 @@ interface FindMemberResponse {
 
 export default function Home() {
   const [code, setCode] = useState("");
+  const [birthday, setBirthday] = useState("");
   const [name, setName] = useState("");
   const [rows, setRaws] = useState<FindMemberResponse[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -110,6 +111,10 @@ export default function Home() {
     setCode(e.currentTarget.value);
   };
 
+  const handleBirthdayInput: FormEventHandler<HTMLInputElement> = (e) => {
+    setBirthday(e.currentTarget.value);
+  };
+
   const handleNameInput: FormEventHandler<HTMLInputElement> = (e) => {
     abortController.abort("next request");
     setName(e.currentTarget.value);
@@ -117,7 +122,12 @@ export default function Home() {
 
   const handleSubmit: MouseEventHandler<HTMLButtonElement> = async (e) => {
     if (!code) {
-      errorShow("員工編號錯誤", "請輸入員工編號");
+      errorShow("輸入錯誤", "請輸入員工編號");
+      return;
+    }
+
+    if (!birthday) {
+      errorShow("輸入錯誤", "請輸入生日");
       return;
     }
 
@@ -126,6 +136,7 @@ export default function Home() {
     const isCheckedRes = await edenApi.api["is-checked"].get({
       $query: {
         code,
+        birthday,
       },
     });
 
@@ -208,6 +219,17 @@ export default function Home() {
           onInput={handleCodeInput}
           disabled={alreadyChecked || onChecking}
           value={code}
+        />
+        <Label htmlFor="birthday" className="m-1 pl-2">
+          員工編號
+        </Label>
+        <Input
+          id="birthday"
+          className="m-1 text-center bg-gray-900"
+          placeholder="請輸入生日"
+          onInput={handleBirthdayInput}
+          disabled={alreadyChecked || onChecking}
+          value={birthday}
         />
         <Button
           className="m-1 w-[100%]"
