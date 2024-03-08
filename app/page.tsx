@@ -234,6 +234,7 @@ export default function Home() {
         ) : (
           <Input
             type="date"
+            placeholder="請選擇生日"
             className="m-1 bg-gray-900 text-center block appearance-none"
             value={birthday ? format(birthday, "yyyy-MM-dd") : undefined}
             onChange={(e) => setBirthday(new Date(e.currentTarget.value))}
