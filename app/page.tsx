@@ -113,10 +113,13 @@ export default function Home() {
             code,
           },
         })
-        .then(({ data }) => {
+        .then(({ data, error }) => {
           if (data) {
             setName(data.name);
             setSeatNumber(data.seatNumber);
+          }
+          if (error) {
+            errorShow("錯誤", error.value);
           }
         });
     }
