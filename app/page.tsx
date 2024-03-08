@@ -18,6 +18,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DatePicker } from "@/components/date-picker";
+import { format } from "date-fns";
 
 interface FindMemberResponse {
   id: number;
@@ -28,7 +30,7 @@ interface FindMemberResponse {
 
 export default function Home() {
   const [code, setCode] = useState("");
-  const [birthday, setBirthday] = useState("");
+  const [birthday, setBirthday] = useState<Date>();
   const [name, setName] = useState("");
   const [rows, setRaws] = useState<FindMemberResponse[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -50,6 +52,7 @@ export default function Home() {
   const reset = () => {
     setCode("");
     setName("");
+    setBirthday(undefined);
     setRaws([]);
     setAlreadyChecked(false);
     setBtnText("簽到");
@@ -111,10 +114,6 @@ export default function Home() {
     setCode(e.currentTarget.value);
   };
 
-  const handleBirthdayInput: FormEventHandler<HTMLInputElement> = (e) => {
-    setBirthday(e.currentTarget.value);
-  };
-
   const handleNameInput: FormEventHandler<HTMLInputElement> = (e) => {
     abortController.abort("next request");
     setName(e.currentTarget.value);
@@ -136,7 +135,7 @@ export default function Home() {
     const isCheckedRes = await edenApi.api["is-checked"].get({
       $query: {
         code,
-        birthday,
+        birthday: format(birthday, "yyyy-MM-dd"),
       },
     });
 
@@ -221,21 +220,21 @@ export default function Home() {
           value={code}
         />
         <Label htmlFor="birthday" className="m-1 pl-2">
-          員工編號
+          生日
         </Label>
-        <Input
-          id="birthday"
+        {/* <Input type="date"></Input> */}
+        <DatePicker
           className="m-1 text-center bg-gray-900"
-          placeholder="請輸入生日"
-          onInput={handleBirthdayInput}
+          date={birthday}
+          onDateChange={setBirthday}
+          placeholder="請選擇生日"
           disabled={alreadyChecked || onChecking}
-          value={birthday}
         />
         <Button
           className="m-1 w-[100%]"
           variant="secondary"
           onClick={handleSubmit}
-          disabled={alreadyChecked || onChecking || !code}
+          disabled={alreadyChecked || onChecking || !code || !birthday}
         >
           {btnText}
         </Button>
