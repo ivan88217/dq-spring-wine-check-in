@@ -234,7 +234,7 @@ export default function Home() {
         ) : (
           <Input
             type="date"
-            className="m-1 bg-gray-900 text-center block w-[75vw] mx-auto"
+            className="m-1 bg-gray-900 text-center block appearance-none"
             value={birthday ? format(birthday, "yyyy-MM-dd") : undefined}
             onChange={(e) => setBirthday(new Date(e.currentTarget.value))}
             disabled={alreadyChecked || onChecking}
