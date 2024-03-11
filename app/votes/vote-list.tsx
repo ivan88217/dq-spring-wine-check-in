@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ImageCard } from "./image-card";
+import { getCookie, setCookie } from "@/lib/cookie-parser";
 
 export interface VoteItem {
   id: number;
@@ -16,21 +18,57 @@ export interface VoteListProps {
 
 export function VoteList({ data = [] }: VoteListProps) {
   const [selected, setSelected] = useState("");
+  const [imageCardData, setImageCardData] = useState<VoteItem | null>(null);
+  const [voted, setVoted] = useState<VoteItem | null>(null);
+
+  useEffect(() => {
+    const votedId = getCookie("voted");
+    console.log("votedId", votedId);
+    if (votedId) {
+      setSelected(votedId);
+      const voted = data.find((item) => item.id === Number(votedId));
+      if (voted) {
+        setVoted(voted);
+      }
+    }
+  });
+
   const onValueChange = (value: string) => {
     console.log("Selected value: ", value);
     setSelected(value);
   };
 
+  const onOutsideClick = () => {
+    setImageCardData(null);
+  };
+
+  const handleVote = () => {
+    const voted = data.find((item) => item.id === Number(selected));
+    if (!voted) {
+      return;
+    }
+    alert(`投票成功 ! 感謝您對 ${voted?.name} 的支持`);
+    setVoted(voted);
+    setCookie("voted", selected, 60 * 60);
+  };
+
   return (
     <div className="w-full flex flex-col items-center">
+      <ImageCard
+        imageUrl={imageCardData?.imageUrl || "/icon.jpg"}
+        title={imageCardData?.name || ""}
+        hidden={!imageCardData}
+        onOutsideClick={onOutsideClick}
+      />
       <RadioGroup
-        className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 pr-4 justify-items-center"
+        className="w-full grid grid-cols-1 lg:grid-cols-2 gap-3 justify-items-center"
         onValueChange={onValueChange}
         value={selected}
+        disabled={!!voted}
       >
         {data.map((item) => (
           <div
-            className="flex items-center space-x-2 border border-purple-300 rounded p-5 m-2 w-5/6"
+            className="flex items-center space-x-2 border border-purple-300 rounded p-3 m-2 w-5/6"
             key={item.id}
           >
             <RadioGroupItem id={`${item.id}`} value={`${item.id}`} />
@@ -38,20 +76,15 @@ export function VoteList({ data = [] }: VoteListProps) {
               htmlFor={`${item.id}`}
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-full"
             >
-              <div className="flex flex-auto items-center">
+              <div className="flex items-center">
                 <Image
                   src={item.imageUrl}
                   alt={item.name}
-                  width={80}
-                  height={80}
+                  width={100}
+                  height={100}
+                  onClick={() => setImageCardData(item)}
                 />
-                <Image
-                  src={item.imageUrl}
-                  alt={item.name}
-                  width={200}
-                  height={200}
-                />
-                <span className="ml-4 text-2xl">{item.name}</span>
+                <span className="ml-4 text-2xl text-center w-3/5">{item.name}</span>
               </div>
             </label>
           </div>
@@ -60,10 +93,10 @@ export function VoteList({ data = [] }: VoteListProps) {
       <Button
         className="m-4 w-3/4"
         variant={"secondary"}
-        disabled={!selected}
-        onClick={() => console.log("Selected: ", selected)}
+        disabled={!selected || !!voted}
+        onClick={handleVote}
       >
-        投票
+        {voted ? `您已經投給 ${voted.name} 了` : "投票"}
       </Button>
     </div>
   );
