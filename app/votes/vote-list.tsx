@@ -45,6 +45,12 @@ export function VoteList({ data = [] }: VoteListProps) {
                   width={80}
                   height={80}
                 />
+                <Image
+                  src={item.imageUrl}
+                  alt={item.name}
+                  width={200}
+                  height={200}
+                />
                 <span className="ml-4 text-2xl">{item.name}</span>
               </div>
             </label>
