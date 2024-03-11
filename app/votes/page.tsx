@@ -1,4 +1,10 @@
+import { Metadata } from "next";
 import { VoteItem, VoteList } from "./vote-list";
+
+export const metadata: Metadata = {
+  title: "今天我最型 - 敦謙春酒服裝投票",
+  description: "今天我最型 - 敦謙集團 2024年 春酒服裝投票",
+};
 
 const getData = async (): Promise<VoteItem[]> => {
   return [
