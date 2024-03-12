@@ -41,19 +41,20 @@ export const teamsController = new Elysia()
   )
   .post(
     "/teams",
-    async ({ body, set }) => {
-      const { teamId, name, image } = body;
+    async ({ body, set, params }) => {
+      const { id, name, image } = body;
+      let team = null;
 
-      if (teamId) {
-        await prisma.team.update({
-          where: { id: teamId },
+      if (id) {
+        team = await prisma.team.update({
+          where: { id },
           data: {
             name,
             image,
           },
         });
       } else {
-        await prisma.team.create({
+        team = await prisma.team.create({
           data: {
             name,
             image,
@@ -62,12 +63,40 @@ export const teamsController = new Elysia()
       }
 
       set.status = 201;
+
+      return {
+        id: team.id,
+        name: team.name,
+        imageUrl: team.image,
+      };
     },
     {
       body: t.Object({
-        teamId: t.Nullable(t.Number()),
+        id: t.Optional(t.Number()),
         name: t.String(),
         image: t.String(),
+      }),
+      response: t.Object({
+        id: t.Number(),
+        name: t.String(),
+        imageUrl: t.Nullable(t.String()),
+      }),
+      error({ error }) {
+        return error.message;
+      },
+    }
+  )
+  .delete(
+    "/teams/:id",
+    async ({ params }) => {
+      const { id } = params;
+      await prisma.team.delete({
+        where: { id: parseInt(id) },
+      });
+    },
+    {
+      params: t.Object({
+        id: t.String(),
       }),
       error({ error }) {
         return error.message;
