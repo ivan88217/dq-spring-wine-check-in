@@ -35,20 +35,13 @@ export function Chart({ data }: ChartProps) {
   const [chartData, setChartData] = useState(data);
   const [currentInterval, setCurrentInterval] = useState<NodeJS.Timeout>();
 
-  const fakeData = (prev: ChartData[]) => {
-    const newData = prev.map((item) => ({
-      ...item,
-      votes: item.votes + Math.floor(Math.random() * 10),
-    }));
-    return newData;
-  };
-
   const fetchData = async () => {
     const { data, error } = await edenApi.api["get-teams"].get();
     if (error) {
       throw new Error(error.message);
     }
-    return data.map((team) => ({
+    console.log("data", data);
+    return data.map<ChartData>((team) => ({
       id: team.id,
       name: team.name,
       imageUrl: team.imageUrl || "/icon.png",
@@ -58,8 +51,9 @@ export function Chart({ data }: ChartProps) {
 
   useEffect(() => {
     if (!currentInterval) {
-      const interval = setInterval(() => {
-        setChartData(fakeData);
+      const interval = setInterval(async () => {
+        const newData = await fetchData();
+        setChartData(newData);
       }, 2 * 1000);
       setCurrentInterval(interval);
     }
@@ -92,10 +86,17 @@ export function Chart({ data }: ChartProps) {
     index,
   }: RenderCustomBarLabelProps) => {
     const imageUrl = data[index].imageUrl; // 替換為你的圖片 URL
-    const size = Math.min(width, height) - 10;
+    const size = Math.max(Math.min(width, height) - 10, 0);
+    const dy = y > 10 ? -10 : 0;
     return (
       <g>
-        <text x={x + width / 2} y={y - 10} fill="#FF9C00" textAnchor="middle">
+        <text
+          x={x + width / 2}
+          y={y}
+          dy={dy}
+          fill="#FF9C00"
+          textAnchor="middle"
+        >
           {value}
         </text>
         {height > size - 10 ? (
