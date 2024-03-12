@@ -93,7 +93,11 @@ export function VoteList({ data = [] }: VoteListProps) {
                 <span
                   className={cn(
                     "ml-4 text-2xl text-center w-3/5",
-                    item.id === parseInt(selected) && "text-purple-50"
+                    item.id === parseInt(selected) && "text-purple-50",
+                    !!voted &&
+                      (item.id === parseInt(selected)
+                        ? "text-gray-400"
+                        : "text-gray-500")
                   )}
                 >
                   {item.name}
