@@ -38,7 +38,7 @@ export function Chart({ data }: ChartProps) {
   const [currentInterval, setCurrentInterval] = useState<NodeJS.Timeout>();
 
   const fetchData = async () => {
-    const { data, error } = await edenApi.api["get-teams"].get();
+    const { data, error } = await edenApi.api.teams.get();
     if (error) {
       throw new Error(error.message);
     }

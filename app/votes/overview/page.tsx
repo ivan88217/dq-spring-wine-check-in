@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 const getData = async () => {
   noStore();
-  const { data, error } = await edenApi.api["get-teams"].get();
+  const { data, error } = await edenApi.api.teams.get();
   if (error) {
     throw new Error(error.message);
   }
