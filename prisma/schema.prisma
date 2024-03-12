@@ -34,6 +34,7 @@ model Member {
   prizePoolMembers PrizePoolMember[]
   checkIn          CheckIn?
   memberPrizes     MemberPrize[]
+  teamMember       TeamMember?
 }
 
 /// 獎池表
@@ -86,4 +87,27 @@ model MemberPrize {
   prize     Prize    @relation(fields: [prizeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@id([memberId, prizeId])
+}
+
+/// 參賽隊伍
+model Team {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(32) // 隊伍名稱
+  description String?      @db.VarChar(128) // 隊伍描述
+  image       String?      @db.VarChar(256) // 隊伍圖片
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
+  teamMembers TeamMember[]
+}
+
+/// 隊伍成員
+model TeamMember {
+  memberId  Int      @unique
+  teamId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  member    Member   @relation(fields: [memberId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  team      Team     @relation(fields: [teamId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@id([memberId, teamId])
 }
