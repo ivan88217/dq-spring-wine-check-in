@@ -62,7 +62,7 @@ export function Chart({ data }: ChartProps) {
   });
 
   const renderCustomAxisTick = ({ x, y, index }: RenderCustomAxisTickProps) => {
-    const text = data[index].name;
+    const text = chartData[index].name;
     return (
       <g transform={`translate(${x},${y})`}>
         <text
@@ -91,7 +91,7 @@ export function Chart({ data }: ChartProps) {
     name,
     index,
   }: RenderCustomBarLabelProps) => {
-    const imageUrl = data[index].imageUrl; // 替換為你的圖片 URL
+    const imageUrl = chartData[index].imageUrl; // 替換為你的圖片 URL
     const size = Math.max(Math.min(width, height) - 10, 0);
     const dy = y > 10 ? -10 : 0;
     return (
