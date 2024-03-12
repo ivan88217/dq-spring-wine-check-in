@@ -2,6 +2,8 @@
 
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { edenApi } from "@/lib/api";
 
 interface RenderCustomAxisTickProps {
   x: number;
@@ -19,20 +21,62 @@ interface RenderCustomBarLabelProps {
   index: number;
 }
 
+export interface ChartData {
+  votes: number;
+  name: string;
+  imageUrl: string;
+}
+
 export interface ChartProps {
-  data: {
-    votes: number;
-    name: string;
-    imageUrl: string;
-  }[];
+  data: ChartData[];
 }
 
 export function Chart({ data }: ChartProps) {
+  const [chartData, setChartData] = useState(data);
+  const [currentInterval, setCurrentInterval] = useState<NodeJS.Timeout>();
+
+  const fakeData = (prev: ChartData[]) => {
+    const newData = prev.map((item) => ({
+      ...item,
+      votes: item.votes + Math.floor(Math.random() * 10),
+    }));
+    return newData;
+  };
+
+  const fetchData = async () => {
+    const { data, error } = await edenApi.api["get-teams"].get();
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data.map((team) => ({
+      id: team.id,
+      name: team.name,
+      imageUrl: team.imageUrl || "/icon.png",
+      votes: team.votes,
+    }));
+  };
+
+  useEffect(() => {
+    if (!currentInterval) {
+      const interval = setInterval(() => {
+        setChartData(fakeData);
+      }, 2 * 1000);
+      setCurrentInterval(interval);
+    }
+
+    return () => {
+      if (currentInterval) {
+        clearInterval(currentInterval);
+      }
+    };
+  });
+
   const renderCustomAxisTick = ({ x, y, index }: RenderCustomAxisTickProps) => {
+    const text = data[index].name;
     return (
       <g transform={`translate(${x},${y})`}>
-        <text x={0} y={0} dy={16} dx={10} textAnchor="end" fill="#ccc">
-          {data[index].name}
+        <text x={0} y={0} dy={16} dx={0} textAnchor="middle" fill="#ccc">
+          {text}
         </text>
       </g>
     );
@@ -47,7 +91,6 @@ export function Chart({ data }: ChartProps) {
     name,
     index,
   }: RenderCustomBarLabelProps) => {
-    console.log(name, height);
     const imageUrl = data[index].imageUrl; // 替換為你的圖片 URL
     const size = Math.min(width, height) - 10;
     return (
@@ -72,13 +115,13 @@ export function Chart({ data }: ChartProps) {
         <CardContent>
           <div className="mt-4 h-[80vh]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data}>
+              <BarChart data={chartData}>
                 <XAxis
                   dataKey="name"
                   tick={renderCustomAxisTick}
                   type="category"
                 />
-                <YAxis type="number" domain={[0, "dataMax + 100"]} />
+                <YAxis type="number" domain={[0, "dataMax + 50"]} />
                 <Bar
                   dataKey="votes"
                   fill="#FF9C00"
