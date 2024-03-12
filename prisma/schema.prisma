@@ -98,6 +98,7 @@ model Team {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @default(now()) @updatedAt
   teamMembers TeamMember[]
+  votes       Vote[]
 }
 
 /// 隊伍成員
@@ -110,4 +111,13 @@ model TeamMember {
   team      Team     @relation(fields: [teamId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@id([memberId, teamId])
+}
+
+/// 投票(不記名)
+model Vote {
+  id        Int      @id @default(autoincrement())
+  teamId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  team      Team     @relation(fields: [teamId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
