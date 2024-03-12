@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ImageCard } from "./image-card";
 import { getCookie, setCookie } from "@/lib/cookie-parser";
+import { edenApi } from "@/lib/api";
 
 export interface VoteItem {
   id: number;
@@ -47,6 +48,7 @@ export function VoteList({ data = [] }: VoteListProps) {
     if (!voted) {
       return;
     }
+    edenApi.api.votes.post({ teamId: voted.id });
     alert(`投票成功 ! 感謝您對 ${voted?.name} 的支持`);
     setVoted(voted);
     setCookie("voted", selected, 60 * 60);
@@ -76,15 +78,17 @@ export function VoteList({ data = [] }: VoteListProps) {
               htmlFor={`${item.id}`}
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-full"
             >
-              <div className="flex items-center">
+              <div className="flex items-center min-h-20 max-h-24">
                 <Image
                   src={item.imageUrl}
                   alt={item.name}
-                  width={100}
-                  height={100}
+                  width={80}
+                  height={80}
                   onClick={() => setImageCardData(item)}
                 />
-                <span className="ml-4 text-2xl text-center w-3/5">{item.name}</span>
+                <span className="ml-4 text-2xl text-center w-3/5">
+                  {item.name}
+                </span>
               </div>
             </label>
           </div>

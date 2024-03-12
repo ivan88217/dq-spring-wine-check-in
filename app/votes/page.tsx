@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 import { VoteItem, VoteList } from "./vote-list";
+import { edenApi } from "@/lib/api";
+import { unstable_noStore as noStore } from 'next/cache';
 
 export const metadata: Metadata = {
   title: "今天我最型 - 敦謙春酒服裝投票",
@@ -7,28 +9,16 @@ export const metadata: Metadata = {
 };
 
 const getData = async (): Promise<VoteItem[]> => {
-  return [
-    {
-      id: 1,
-      name: "test1",
-      imageUrl: "https://i.imgur.com/jX20YUK_d.webp",
-    },
-    {
-      id: 2,
-      name: "test2",
-      imageUrl: "https://i.imgur.com/sjUvrU5_d.webp",
-    },
-    {
-      id: 3,
-      name: "test3",
-      imageUrl: "https://i.imgur.com/jX20YUK_d.webp",
-    },
-    {
-      id: 4,
-      name: "test4",
-      imageUrl: "https://i.imgur.com/jX20YUK_d.webp",
-    },
-  ];
+  noStore();
+  const { data, error } = await edenApi.api["get-teams"].get();
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data.map<VoteItem>((team) => ({
+    id: team.id,
+    name: team.name,
+    imageUrl: team.imageUrl || "/icon.png",
+  }));
 };
 
 export default async function Votes() {
@@ -38,7 +28,9 @@ export default async function Votes() {
       <h1 className="scroll-m-20 text-3xl font-bold tracking-tight lg:text-4xl pt-3">
         今天我最型
       </h1>
-      <p className="scroll-m-20 text-lg lg:text-xl">每人一票(點擊圖片可以放大)</p>
+      <p className="scroll-m-20 text-lg lg:text-xl">
+        每人一票(點擊圖片可以放大)
+      </p>
       <VoteList data={data} />
     </div>
   );
