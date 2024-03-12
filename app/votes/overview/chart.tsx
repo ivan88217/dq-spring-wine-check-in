@@ -57,12 +57,6 @@ export function Chart({ data }: ChartProps) {
       }, 2 * 1000);
       setCurrentInterval(interval);
     }
-
-    return () => {
-      if (currentInterval) {
-        clearInterval(currentInterval);
-      }
-    };
   });
 
   const renderCustomAxisTick = ({ x, y, index }: RenderCustomAxisTickProps) => {
