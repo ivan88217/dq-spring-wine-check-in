@@ -103,7 +103,7 @@ export function TeamList({ teams }: TeamListProps) {
 
   return (
     <Table className="container">
-      <TableCaption>A list of your recent invoices.</TableCaption>
+      <TableCaption>敦謙 2024 春酒 - 參賽隊伍管理</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead>名稱</TableHead>
