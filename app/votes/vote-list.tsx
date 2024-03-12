@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ImageCard } from "./image-card";
 import { getCookie, setCookie } from "@/lib/cookie-parser";
 import { edenApi } from "@/lib/api";
+import { cn } from "@/lib/utils";
 
 export interface VoteItem {
   id: number;
@@ -70,7 +71,10 @@ export function VoteList({ data = [] }: VoteListProps) {
       >
         {data.map((item) => (
           <div
-            className="flex items-center space-x-2 border border-purple-300 rounded p-3 m-2 w-5/6"
+            className={cn(
+              "flex items-center space-x-2 border border-purple-800 rounded p-3 m-2 w-5/6",
+              item.id === parseInt(selected) && "border-2 border-purple-300"
+            )}
             key={item.id}
           >
             <RadioGroupItem id={`${item.id}`} value={`${item.id}`} />
@@ -86,7 +90,12 @@ export function VoteList({ data = [] }: VoteListProps) {
                   height={80}
                   onClick={() => setImageCardData(item)}
                 />
-                <span className="ml-4 text-2xl text-center w-3/5">
+                <span
+                  className={cn(
+                    "ml-4 text-2xl text-center w-3/5",
+                    item.id === parseInt(selected) && "text-purple-50"
+                  )}
+                >
                   {item.name}
                 </span>
               </div>
