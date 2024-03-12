@@ -4,6 +4,7 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { edenApi } from "@/lib/api";
+import { voteName } from "@/lib/constants";
 
 interface RenderCustomAxisTickProps {
   x: number;
@@ -105,7 +106,7 @@ export function Chart({ data }: ChartProps) {
     <div className="w-full">
       <Card className="h-4/5">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-base font-normal">今天我最型 - 投票結果</CardTitle>
+          <CardTitle className="text-base font-normal">{voteName} - 投票結果</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="mt-4 h-[80vh]">

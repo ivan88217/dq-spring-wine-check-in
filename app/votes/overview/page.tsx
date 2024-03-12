@@ -3,10 +3,11 @@ import { Chart } from "./chart";
 import Image from "next/image";
 import { edenApi } from "@/lib/api";
 import { unstable_noStore as noStore } from "next/cache";
+import { voteName } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "今天我最型 投票結果 - 敦謙春酒",
-  description: "今天我最型 投票結果 - 敦謙集團 2024年 春酒服裝投票",
+  title: `${voteName} 投票結果 - 敦謙春酒`,
+  description: `${voteName} 投票結果 - 敦謙集團 2024年 春酒服裝投票`,
 };
 
 const getData = async () => {
