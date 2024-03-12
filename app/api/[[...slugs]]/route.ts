@@ -6,8 +6,12 @@ import { getMembersController } from "@/controllers/get-members";
 import { winPrizeController } from "@/controllers/win-prize";
 import { getWinnersController } from "@/controllers/get-winners";
 import { getMemberDetailController } from "@/controllers/get-member-detail";
+import { getTeamsController } from "@/controllers/get-teams";
+import { votesController } from "@/controllers/votes";
 
 const app = new Elysia({ prefix: "/api" })
+  .use(votesController)
+  .use(getTeamsController)
   .use(getMemberDetailController)
   .use(winPrizeController)
   .use(isCheckedController)
