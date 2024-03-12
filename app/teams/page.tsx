@@ -1,6 +1,12 @@
 import { TeamList } from "./list";
 import { unstable_noStore as noStore } from "next/cache";
 import { edenApi } from "@/lib/api";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: `參賽隊伍管理 - 敦謙春酒`,
+  description: `參賽隊伍管理 - 敦謙集團 2024年 春酒服裝投票`,
+};
 
 const getData = async () => {
   noStore();
