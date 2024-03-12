@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import { Chart } from "./chart";
-import Image from "next/image";
 import { edenApi } from "@/lib/api";
 import { unstable_noStore as noStore } from "next/cache";
 import { voteName } from "@/lib/constants";
