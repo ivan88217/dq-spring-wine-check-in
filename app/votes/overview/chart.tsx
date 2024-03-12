@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { edenApi } from "@/lib/api";
 import { voteName } from "@/lib/constants";
+import Image from "next/image";
 
 interface RenderCustomAxisTickProps {
   x: number;
@@ -64,7 +65,17 @@ export function Chart({ data }: ChartProps) {
     const text = data[index].name;
     return (
       <g transform={`translate(${x},${y})`}>
-        <text x={0} y={0} dy={16} dx={0} textAnchor="middle" fill="#ccc">
+        <text
+          x={0}
+          y={0}
+          dy={16}
+          dx={0}
+          textAnchor="middle"
+          fill="#194d91"
+          style={{
+            textShadow: "0 0 5px #fff",
+          }}
+        >
           {text}
         </text>
       </g>
@@ -89,8 +100,11 @@ export function Chart({ data }: ChartProps) {
           x={x + width / 2}
           y={y}
           dy={dy}
-          fill="#FF9C00"
+          fill="#194d91"
           textAnchor="middle"
+          style={{
+            textShadow: "0 0 5px #fff",
+          }}
         >
           {value}
         </text>
@@ -104,27 +118,55 @@ export function Chart({ data }: ChartProps) {
   };
   return (
     <div className="w-full">
-      <Card className="h-4/5">
+      <Card className="h-full bg-gray-50 bg-opacity-0 border-blue-400 border-none">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-base font-normal">{voteName} - 投票結果</CardTitle>
+          <CardTitle
+            className="font-normal text-5xl"
+            style={{
+              textShadow: "0 0 5px #55F",
+            }}
+          >
+            {voteName} - 投票結果
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="mt-4 h-[80vh]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <XAxis
-                  dataKey="name"
-                  tick={renderCustomAxisTick}
-                  type="category"
-                />
-                <YAxis type="number" domain={[0, "dataMax + 50"]} />
-                <Bar
-                  dataKey="votes"
-                  fill="#FF9C00"
-                  label={renderCustomBarLabel}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+        <CardContent className="flex">
+          <div className="flex-1 relative">
+            <Image
+              src={"/vote-qr.png"}
+              width={300}
+              height={300}
+              alt="vote"
+              className="fixed bottom-10 left-5"
+            />
+          </div>
+          <div className="flex-[3] pt-[15vh]">
+            <div className="mt-4 h-[70vh]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData}>
+                  <XAxis
+                    dataKey="name"
+                    tick={renderCustomAxisTick}
+                    type="category"
+                  />
+                  <YAxis
+                    type="number"
+                    domain={[0, "dataMax + 50"]}
+                    tick={{
+                      fill: "#194d91",
+                      style: {
+                        textShadow: "0 0 5px #fff",
+                      },
+                    }}
+                    className="text-xl text-tanning"
+                  />
+                  <Bar
+                    dataKey="votes"
+                    fill="#194d91"
+                    label={renderCustomBarLabel}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </CardContent>
       </Card>

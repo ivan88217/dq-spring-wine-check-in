@@ -22,19 +22,12 @@ const getData = async () => {
     imageUrl: team.imageUrl || "/icon.png",
     votes: team.votes,
   }));
-}
+};
 
 export default async function Overview() {
   const data = await getData();
   return (
-    <div className="flex flex-col items-center justify-between lg:p-10 md:p-6 sm:p-1">
-      <Image
-        src={"/vote-qr.png"}
-        width={150}
-        height={150}
-        alt="vote"
-        className="fixed top-10 right-10 z-50 md:scale-150"
-      />
+    <div className="h-[100vh] flex flex-col items-center justify-between lg:p-10 md:p-6 sm:p-1 bg-vote-background bg-cover bg-no-repeat">
       <Chart data={data} />
     </div>
   );
