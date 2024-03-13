@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { format } from "date-fns";
 import { Elysia, t } from "elysia";
 
 export const getMemberDetailController = new Elysia().get(
@@ -13,6 +14,7 @@ export const getMemberDetailController = new Elysia().get(
         id: true,
         code: true,
         name: true,
+        birthday: true,
         departmentName: true,
         seatNumber: true,
       },
@@ -22,7 +24,14 @@ export const getMemberDetailController = new Elysia().get(
       throw new Error("找不到此員工編號");
     }
 
-    return members;
+    return {
+      id: members.id,
+      code: members.code,
+      name: members.name,
+      birthday: format(members.birthday!, "MMdd"),
+      departmentName: members.departmentName,
+      seatNumber: members.seatNumber,
+    };
   },
   {
     query: t.Object({
@@ -32,6 +41,7 @@ export const getMemberDetailController = new Elysia().get(
       id: t.Number(),
       code: t.String(),
       name: t.String(),
+      birthday: t.String(),
       departmentName: t.Nullable(t.String()),
       seatNumber: t.Nullable(t.String()),
     }),
