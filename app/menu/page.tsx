@@ -1,5 +1,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "目錄 - 敦謙春酒",
+  description: "敦謙集團 2024年 春酒系統",
+};
 
 export default function Menu() {
   return (
@@ -35,6 +41,11 @@ export default function Menu() {
         <Button variant={"secondary"} className="w-full">
           <Link href="/winners" className="w-full">
             抽籤結果頁面
+          </Link>
+        </Button>
+        <Button variant={"secondary"} className="w-full">
+          <Link href="http://127.0.0.1:5000" className="w-full">
+            抽獎程式(僅限現場主機可用)
           </Link>
         </Button>
       </div>
