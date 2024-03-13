@@ -126,21 +126,21 @@ export function Chart({ data }: ChartProps) {
               textShadow: "0 0 5px #55F",
             }}
           >
-            {voteName} - 投票結果
+            &nbsp;
           </CardTitle>
         </CardHeader>
         <CardContent className="flex">
           <div className="flex-[3.5] relative">
             <Image
               src={"/vote-qr.png"}
-              width={300}
-              height={300}
+              width={220}
+              height={220}
               alt="vote"
-              className="fixed bottom-10 left-5"
+              className="fixed bottom-5 left-5"
             />
           </div>
-          <div className="flex-[10] pt-[15vh]">
-            <div className="mt-4 h-[70vh] pt-16">
+          <div className="flex-[10] pt-[22vh]">
+            <div className="mt-4 h-[63vh] pt-16">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
                   <XAxis
