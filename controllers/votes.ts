@@ -5,11 +5,37 @@ export const votesController = new Elysia()
   .post(
     "/votes",
     async ({ body }) => {
-      const { teamId } = body;
+      const { teamId, nameOrCode } = body;
+
+      const member = await prisma.member.findFirst({
+        where: {
+          OR: [
+            {
+              name: nameOrCode,
+            },
+            {
+              code: nameOrCode,
+            },
+          ],
+        },
+        select: {
+          id: true,
+          vote: true,
+        },
+      });
+
+      if (!member) {
+        throw new Error("輸入的員工編號或姓名不存在");
+      }
+
+      if (member.vote) {
+        throw new Error("您已經投過票了");
+      }
 
       await prisma.vote.create({
         data: {
           teamId,
+          memberId: member.id,
         },
       });
 
@@ -17,6 +43,7 @@ export const votesController = new Elysia()
     },
     {
       body: t.Object({
+        nameOrCode: t.String(),
         teamId: t.Number(),
       }),
       response: t.String(),

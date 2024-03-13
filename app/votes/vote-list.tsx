@@ -8,6 +8,7 @@ import { ImageCard } from "./image-card";
 import { getCookie, setCookie } from "@/lib/cookie-parser";
 import { edenApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 
 export interface VoteItem {
   id: number;
@@ -19,6 +20,7 @@ export interface VoteListProps {
 }
 
 export function VoteList({ data = [] }: VoteListProps) {
+  const [nameOrCode, setNameOrCode] = useState("");
   const [selected, setSelected] = useState("");
   const [imageCardData, setImageCardData] = useState<VoteItem | null>(null);
   const [voted, setVoted] = useState<VoteItem | null>(null);
@@ -33,7 +35,12 @@ export function VoteList({ data = [] }: VoteListProps) {
         setVoted(voted);
       }
     }
-  });
+
+    const isChecked = getCookie("isChecked");
+    if (isChecked) {
+      setNameOrCode(isChecked);
+    }
+  }, []);
 
   const onValueChange = (value: string) => {
     console.log("Selected value: ", value);
@@ -44,12 +51,19 @@ export function VoteList({ data = [] }: VoteListProps) {
     setImageCardData(null);
   };
 
-  const handleVote = () => {
+  const handleVote = async () => {
     const voted = data.find((item) => item.id === Number(selected));
     if (!voted) {
       return;
     }
-    edenApi.api.votes.post({ teamId: voted.id });
+    const { data: response, error } = await edenApi.api.votes.post({
+      teamId: voted.id,
+      nameOrCode,
+    });
+    if (error) {
+      console.log(error);
+      return alert(error.value);
+    }
     alert(`投票成功 ! 感謝您對 ${voted?.name} 的支持`);
     setVoted(voted);
     setCookie("voted", selected, 60 * 60);
@@ -107,6 +121,12 @@ export function VoteList({ data = [] }: VoteListProps) {
           </div>
         ))}
       </RadioGroup>
+      <Input
+        placeholder="輸入您的員工編號或姓名"
+        className="w-3/4 mt-10"
+        value={nameOrCode}
+        onChange={(e) => setNameOrCode(e.target.value)}
+      />
       <Button
         className="m-4 w-3/4"
         variant={"secondary"}
