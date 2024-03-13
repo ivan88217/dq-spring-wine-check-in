@@ -1,11 +1,12 @@
 import prisma from "@/lib/prisma";
+import { format } from "date-fns";
 import { Elysia, t } from "elysia";
 
 export const votesController = new Elysia()
   .post(
     "/votes",
     async ({ body }) => {
-      const { teamId, nameOrCode } = body;
+      const { teamId, nameOrCode, birthday } = body;
 
       const member = await prisma.member.findFirst({
         where: {
@@ -20,12 +21,17 @@ export const votesController = new Elysia()
         },
         select: {
           id: true,
+          birthday: true,
           vote: true,
         },
       });
 
       if (!member) {
         throw new Error("輸入的員工編號或姓名不存在");
+      }
+
+      if (member.birthday && format(member.birthday, "MMdd") !== body.birthday) {
+        throw new Error("生日不正確");
       }
 
       if (member.vote) {
@@ -44,6 +50,7 @@ export const votesController = new Elysia()
     {
       body: t.Object({
         nameOrCode: t.String(),
+        birthday: t.String(),
         teamId: t.Number(),
       }),
       response: t.String(),
