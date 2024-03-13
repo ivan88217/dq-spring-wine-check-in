@@ -172,7 +172,7 @@ export default function Home() {
       return;
     }
 
-    if (!isAdmin) setCookie("isChecked", code, 60 * 60);
+    if (!isAdmin) setCookie("isChecked", code, 60 * 60 * 3);
     setOnChecking(false);
     setAlreadyChecked(true);
     alert(`${code} 簽到成功`);
