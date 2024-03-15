@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import DQIcon from "@/public/icon.jpg";
 
 interface FindMemberResponse {
   id: number;
@@ -206,7 +207,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-between lg:p-10 md:p-6 sm:p-1">
       <Image
-        src="/icon.jpg"
+        src={DQIcon}
         alt="敦謙2024年春酒-自助簽到系統"
         className="rounded-md object-cover"
         width={150}
