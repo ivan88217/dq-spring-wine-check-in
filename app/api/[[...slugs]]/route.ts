@@ -18,7 +18,8 @@ const app = new Elysia({ prefix: "/api" })
   .use(checkInController)
   .use(getMembersController)
   .use(getWinnersController)
-  .use(findMemberController);
+  .use(findMemberController)
+  .compile();
 
 export const GET = app.handle;
 export const POST = app.handle;
