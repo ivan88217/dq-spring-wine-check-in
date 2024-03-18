@@ -4,14 +4,10 @@ stages:
 
 建置:
   stage: build
-  image: oven/bun:latest
   tags:
   - docker
   script:
   # push image
-  - bun install
-  - bun sync-db-schema
-  - bun run build
   - echo ${gcp_artifact_json}|base64 -d| docker login -u _json_key --password-stdin https://asia-east1-docker.pkg.dev
   - docker build -t ${gcp_image_prefix}${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA} .
   - docker push ${gcp_image_prefix}${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA}
