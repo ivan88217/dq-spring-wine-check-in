@@ -1,8 +1,10 @@
-FROM oven/bun:latest
+FROM oven/bun:alpine
 
 WORKDIR /app
 
 COPY . .
+
+RUN apk add nodejs
 
 RUN bun install
 
