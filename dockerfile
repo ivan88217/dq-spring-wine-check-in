@@ -1,4 +1,4 @@
-FROM deploy-con.asia-east1-a.c.production-1386.internal:5000/php-nginx:7.4
+FROM oven/bun:latest
 
 WORKDIR /app
 
