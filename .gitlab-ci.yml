@@ -4,6 +4,7 @@ stages:
 
 建置:
   stage: build
+  image: oven/bun:latest
   tags:
   - docker
   script:
