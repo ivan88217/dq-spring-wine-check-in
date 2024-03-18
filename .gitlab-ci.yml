@@ -1,0 +1,26 @@
+stages: 
+  - build
+  - deploy
+
+建置:
+  stage: build
+  tags:
+  - docker
+  script:
+  # push image
+  - bun install
+  - bun sync-db-schema
+  - bun run build
+  - echo ${gcp_artifact_json}|base64 -d| docker login -u _json_key --password-stdin https://asia-east1-docker.pkg.dev
+  - docker build -t ${gcp_image_prefix}${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA} .
+  - docker push ${gcp_image_prefix}${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA}
+  - docker rmi ${gcp_image_prefix}${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA}
+
+部署:
+  stage: deploy
+  variables:
+    UPSTREAM_SHA: ${CI_COMMIT_SHORT_SHA}
+    UPSTREAM_GCP_IMAGE_PREFIX: ${gcp_image_prefix}
+    UPSTREAM_PROJECT_NAME: ${CI_PROJECT_NAME}
+  trigger: itrd/argocd
+  needs: ['建置']
