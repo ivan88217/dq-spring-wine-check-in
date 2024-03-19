@@ -4,6 +4,33 @@ import prisma from "@/lib/prisma";
 export const getMembersController = new Elysia().get(
   "/get-members",
   async ({ query }) => {
+    let where = undefined;
+    if (query.hasQualified) {
+      where = {
+        OR: [
+          {
+            checkIn: {
+              isNot: null,
+            },
+          },
+        ],
+      };
+
+      if (query.includeStay) {
+        where = {
+          OR: [
+            {
+              checkIn: {
+                isNot: null,
+              },
+            },
+            {
+              isStay: true,
+            },
+          ],
+        };
+      }
+    }
     const members = await prisma.member.findMany({
       select: {
         code: true,
@@ -11,30 +38,15 @@ export const getMembersController = new Elysia().get(
         departmentName: true,
         years: true,
       },
-      where: {
-        isAttend: query.isAttend,
-        isStay: query.isStay,
-        isBoss: query.isBoss,
-        isSubCompany: query.isSubCompany,
-        checkIn: query.isCheckIn
-          ? {
-              isNot: null,
-            }
-          : {
-              is: null,
-            },
-      },
+      where
     });
 
     return members;
   },
   {
     query: t.Object({
-      isAttend: t.Optional(t.BooleanString()),
-      isStay: t.Optional(t.BooleanString()),
-      isBoss: t.Optional(t.BooleanString()),
-      isSubCompany: t.Optional(t.BooleanString()),
-      isCheckIn: t.Optional(t.BooleanString()),
+      hasQualified: t.Optional(t.BooleanString()),
+      includeStay: t.Optional(t.BooleanString()),
     }),
     response: t.Array(
       t.Object({
