@@ -4,10 +4,15 @@ import prisma from "@/lib/prisma";
 export const getMembersController = new Elysia().get(
   "/get-members",
   async ({ query }) => {
-    let where = undefined;
+    let where: any = {
+      isBoss: false,
+    };
     if (query.hasQualified) {
       where = {
         OR: [
+          {
+            isBoss: false,
+          },
           {
             checkIn: {
               isNot: null,
@@ -19,6 +24,9 @@ export const getMembersController = new Elysia().get(
       if (query.includeStay) {
         where = {
           OR: [
+            {
+              isBoss: false,
+            },
             {
               checkIn: {
                 isNot: null,
