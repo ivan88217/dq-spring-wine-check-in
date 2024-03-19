@@ -43,6 +43,11 @@ export default function Menu() {
             抽籤結果頁面
           </Link>
         </Button>
+        <Button variant={"secondary"} className="w-full p-0">
+          <Link href="/admin/winners" className="w-full h-full flex items-center justify-center">
+            抽籤結果頁面(無隱碼)
+          </Link>
+        </Button>
         <Button className="w-full p-0 bg-gray-400">
           <Link href="http://127.0.0.1:5000" className="w-full h-full flex items-center justify-center pr-2 pl-2">
             抽獎程式(僅限現場主機可用)
