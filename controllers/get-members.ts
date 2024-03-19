@@ -6,6 +6,7 @@ export const getMembersController = new Elysia().get(
   async ({ query }) => {
     let where: any = {
       isBoss: false,
+      isWelfareCommittee: true,
     };
     if (query.hasQualified) {
       where = {
