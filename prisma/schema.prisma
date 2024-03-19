@@ -16,26 +16,27 @@ datasource db {
 
 /// 總人員表
 model Member {
-  id               Int               @id @default(autoincrement())
-  name             String            @db.VarChar(12) // 員工姓名
-  code             String            @db.VarChar(32) // 員工編號
-  years            Float // 工作年資
-  email            String?           @db.VarChar(128) // 電子郵件
-  birthday         DateTime?         @db.Date() // 生日 
-  departmentCode   String?           @db.VarChar(16) // 部門代碼
-  departmentName   String?           @db.VarChar(32) // 部門名稱
-  isAttend         Boolean           @default(false) // 是否出席春酒
-  isStay           Boolean           @default(false) // 是否為留守人員
-  isBoss           Boolean           @default(false) // 是否為老闆
-  isSubCompany     Boolean           @default(false) // 是否為子公司
-  seatNumber       String? // 座位號碼
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @default(now()) @updatedAt
-  prizePoolMembers PrizePoolMember[]
-  checkIn          CheckIn?
-  memberPrizes     MemberPrize[]
-  teamMember       TeamMember?
-  vote             Vote?
+  id                 Int               @id @default(autoincrement())
+  name               String            @db.VarChar(12) // 員工姓名
+  code               String            @db.VarChar(32) // 員工編號
+  years              Float // 工作年資
+  email              String?           @db.VarChar(128) // 電子郵件
+  birthday           DateTime?         @db.Date() // 生日 
+  departmentCode     String?           @db.VarChar(16) // 部門代碼
+  departmentName     String?           @db.VarChar(32) // 部門名稱
+  isAttend           Boolean           @default(false) // 是否出席春酒
+  isStay             Boolean           @default(false) // 是否為留守人員
+  isBoss             Boolean           @default(false) // 是否為老闆
+  isSubCompany       Boolean           @default(false) // 是否為子公司
+  isWelfareCommittee Boolean           @default(false) // 是否有參與福委
+  seatNumber         String? // 座位號碼
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @default(now()) @updatedAt
+  prizePoolMembers   PrizePoolMember[]
+  checkIn            CheckIn?
+  memberPrizes       MemberPrize[]
+  teamMember         TeamMember?
+  vote               Vote?
 }
 
 /// 獎池表
