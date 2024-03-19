@@ -57,3 +57,37 @@ export const columns: ColumnDef<Winner>[] = [
     },
   },
 ];
+
+
+export const columnsWithoutHidden: ColumnDef<Winner>[] = [
+  {
+    accessorKey: "prize",
+    filterFn: (rows, name, value) =>
+      (rows.getValue(name) as string).toLowerCase() == value.toLowerCase(),
+    header: ({ column }) => {
+      return sortableHeader("獎項", column);
+    },
+  },
+  {
+    accessorKey: "code",
+    header: ({ column }) => {
+      return sortableHeader("員工編號", column);
+    },
+  },
+  {
+    accessorKey: "name",
+    filterFn: (rows, name, value) => {
+      return rows.original.name.includes(value);
+    },
+    header: ({ column }) => {
+      return sortableHeader("姓名", column);
+    },
+    accessorFn: ({ name }) => (name || ""),
+  },
+  {
+    accessorKey: "departmentName",
+    header: ({ column }) => {
+      return sortableHeader("部門", column);
+    },
+  },
+];

@@ -12,8 +12,6 @@ export const getMembersController = new Elysia().get(
         OR: [
           {
             isBoss: false,
-          },
-          {
             checkIn: {
               isNot: null,
             },
@@ -26,13 +24,12 @@ export const getMembersController = new Elysia().get(
           OR: [
             {
               isBoss: false,
-            },
-            {
               checkIn: {
                 isNot: null,
               },
             },
             {
+              isBoss: false,
               isStay: true,
             },
           ],
