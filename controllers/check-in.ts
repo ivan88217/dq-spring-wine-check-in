@@ -19,9 +19,9 @@ export const checkInController = new Elysia().post(
       throw new Error("輸入的生日有誤");
     }
 
-    // if (!user.isAttend) {
-    //   throw new Error(`來賓${user.name}您好，您未報名參加活動，請洽詢接待人員`);
-    // }
+    if (!user.isAttend) {
+      throw new Error(`來賓${user.name}您好，您未報名參加活動，請洽詢接待人員`);
+    }
 
     const isChecked = await prisma.checkIn.findFirst({
       where: {
