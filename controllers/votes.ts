@@ -8,6 +8,19 @@ export const votesController = new Elysia()
     async ({ body }) => {
       const { teamId, nameOrCode, birthday } = body;
 
+      const allowedVote = await prisma.serverOption.findFirst({
+        where: {
+          key: "vote",
+        },
+        select: {
+          value: true,
+        },
+      });
+
+      if (!allowedVote || !allowedVote.value) {
+        throw new Error("目前不開放投票");
+      }
+
       const member = await prisma.member.findFirst({
         where: {
           OR: [

@@ -5,6 +5,19 @@ import { format } from "date-fns";
 export const checkInController = new Elysia().post(
   "/check-in",
   async ({ body }) => {
+    const allowedCheckIn = await prisma.serverOption.findFirst({
+      where: {
+        key: "check-in",
+      },
+      select: {
+        value: true,
+      },
+    });
+
+    if (!allowedCheckIn || !allowedCheckIn.value) {
+      throw new Error("目前不開放簽到");
+    }
+
     const user = await prisma.member.findFirst({
       where: {
         code: body.code,
