@@ -71,7 +71,7 @@ model CheckIn {
 /// 獎項
 model Prize {
   id           Int           @id @default(autoincrement())
-  name         String        @db.VarChar(32) // 獎項名稱
+  name         String        @db.VarChar(64) // 獎項名稱
   description  String?       @db.VarChar(128) // 獎項描述
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @default(now()) @updatedAt
