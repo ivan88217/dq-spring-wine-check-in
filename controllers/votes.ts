@@ -21,7 +21,7 @@ export const votesController = new Elysia()
         throw new Error("目前不開放投票");
       }
 
-      const member = await prisma.member.findFirst({
+      const members = await prisma.member.findMany({
         where: {
           OR: [
             {
@@ -39,12 +39,14 @@ export const votesController = new Elysia()
         },
       });
 
-      if (!member) {
+      if (!members) {
         throw new Error("輸入的員工編號或姓名不存在");
       }
 
-      if (member.birthday && format(member.birthday, "MMdd") !== body.birthday) {
-        throw new Error("生日不正確");
+      const member = members.find((member) => member.birthday && format(member.birthday, "MMdd") === body.birthday);
+      
+      if (!member) {
+        throw new Error("輸入的生日有誤");
       }
 
       if (member.vote) {
