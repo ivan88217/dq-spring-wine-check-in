@@ -117,7 +117,6 @@ model TeamMember {
 model Vote {
   id        Int      @id @default(autoincrement())
   teamId    Int
-  memberId  Int      @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
