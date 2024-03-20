@@ -19,6 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import DQIcon from "@/public/icon.jpg";
+import { replaceSecondCharWithAsterisk } from "@/lib/string-helper";
 
 interface FindMemberResponse {
   id: number;
@@ -306,7 +307,7 @@ export default function Home() {
                 >
                   <TableCell className="font-medium">{row.code}</TableCell>
                   <TableCell>{row.departmentName || "無"}</TableCell>
-                  <TableCell>{row.name.replace(/(?<=^.{1})./g, "*")}</TableCell>
+                  <TableCell>{replaceSecondCharWithAsterisk(row.name)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

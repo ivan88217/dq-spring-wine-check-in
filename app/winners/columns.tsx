@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { replaceSecondCharWithAsterisk } from "@/lib/string-helper";
 import { Column, ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
@@ -48,7 +49,7 @@ export const columns: ColumnDef<Winner>[] = [
     header: ({ column }) => {
       return sortableHeader("姓名", column);
     },
-    accessorFn: ({ name }) => (name ? name.replace(/(?<=^.{1})./g, "*") : ""),
+    accessorFn: ({ name }) => replaceSecondCharWithAsterisk(name),
   },
   {
     accessorKey: "departmentName",
