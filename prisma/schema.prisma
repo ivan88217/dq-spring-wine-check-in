@@ -36,7 +36,6 @@ model Member {
   checkIn            CheckIn?
   memberPrizes       MemberPrize[]
   teamMember         TeamMember?
-  vote               Vote?
 }
 
 /// 獎池表
@@ -100,7 +99,6 @@ model Team {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @default(now()) @updatedAt
   teamMembers TeamMember[]
-  votes       Vote[]
 }
 
 /// 隊伍成員
@@ -117,14 +115,11 @@ model TeamMember {
 
 /// 投票
 model Vote {
+  id        Int      @id @default(autoincrement())
   teamId    Int
   memberId  Int      @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
-  team      Team     @relation(fields: [teamId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  member    Member   @relation(fields: [memberId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-
-  @@id([teamId, memberId])
 }
 
 /// 系統設定
