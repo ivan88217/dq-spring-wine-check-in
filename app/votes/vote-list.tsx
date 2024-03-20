@@ -21,8 +21,6 @@ export interface VoteListProps {
 }
 
 export function VoteList({ data = [] }: VoteListProps) {
-  const [nameOrCode, setNameOrCode] = useState("");
-  const [birthday, setBirthday] = useState("");
   const [selected, setSelected] = useState("");
   const [imageCardData, setImageCardData] = useState<VoteItem | null>(null);
   const [voted, setVoted] = useState<VoteItem | null>(null);
@@ -36,24 +34,6 @@ export function VoteList({ data = [] }: VoteListProps) {
       if (voted) {
         setVoted(voted);
       }
-    }
-
-    const isChecked: string = getCookie("isChecked");
-    if (isChecked) {
-      setNameOrCode(isChecked);
-      edenApi.api["get-member-detail"]
-        .get({
-          $query: {
-            code: isChecked,
-          },
-        })
-        .then((res) => {
-          if (res.error) {
-            console.log(res.error);
-            return;
-          }
-          setBirthday(res.data.birthday);
-        });
     }
   }, []);
 
@@ -73,8 +53,6 @@ export function VoteList({ data = [] }: VoteListProps) {
     }
     const { data: response, error } = await edenApi.api.votes.post({
       teamId: voted.id,
-      birthday,
-      nameOrCode,
     });
     if (error) {
       console.log(error);
@@ -138,32 +116,12 @@ export function VoteList({ data = [] }: VoteListProps) {
         ))}
       </RadioGroup>
       <div className="mt-10 w-3/4 flex flex-col justify-center items-center gap-2">
-        <Label>請輸入您的員工編號或姓名</Label>
-        <Input
-          placeholder="輸入您的員工編號或姓名"
-          className="w-full"
-          value={nameOrCode}
-          onChange={(e) => setNameOrCode(e.target.value)}
-        />
-        <Label>請輸入您的生日 (月日 例. 0211)</Label>
-        <Input
-          placeholder="輸入您的生日 (MMDD 例. 0211)"
-          className={cn(
-            "w-full",
-            birthday && birthday.length !== 4 && "border-red-500"
-          )}
-          value={birthday}
-          onChange={(e) => setBirthday(e.target.value)}
-        />
         <Button
           className="m-4 w-full"
           variant={"secondary"}
           disabled={
             !selected ||
-            !!voted ||
-            !nameOrCode ||
-            !birthday ||
-            birthday.length !== 4
+            !!voted
           }
           onClick={handleVote}
         >
