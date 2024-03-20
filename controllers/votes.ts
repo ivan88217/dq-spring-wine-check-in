@@ -39,7 +39,7 @@ export const votesController = new Elysia()
         },
       });
 
-      if (!members) {
+      if (members.length < 1) {
         throw new Error("輸入的員工編號或姓名不存在");
       }
 
