@@ -63,7 +63,7 @@ export function Combobox({ data, title, value, onValueChange }: ComboboxProps) {
         <Command>
           <CommandInput placeholder={`找尋${title}...`} autoFocus={false} />
           <CommandEmpty>找不到選項</CommandEmpty>
-          <CommandGroup className="overflow-auto md:h-[60vh] h-[30vh]">
+          <CommandGroup className="overflow-auto md:h-[60vh] h-[25vh]">
             {data.map((row) => (
               <CommandItem
                 key={row.value}
