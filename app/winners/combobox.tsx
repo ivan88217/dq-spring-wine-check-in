@@ -59,11 +59,11 @@ export function Combobox({ data, title, value, onValueChange }: ComboboxProps) {
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0">
+      <PopoverContent className="p-0 overflow-auto">
         <Command>
           <CommandInput placeholder={`找尋${title}...`} />
           <CommandEmpty>找不到選項</CommandEmpty>
-          <CommandGroup>
+          <CommandGroup className="overflow-auto h-[40vh]">
             {data.map((row) => (
               <CommandItem
                 key={row.value}
