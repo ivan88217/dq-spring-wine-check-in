@@ -128,12 +128,17 @@ export function DataTable<TData, TValue>({
           <Button onClick={reset} variant={"outline"} className="bg-red-900">
             清除條件
           </Button>
-          <Button variant={"secondary"} className="bg-gray-900 py-0 px-2">
+          <Button
+            variant={"secondary"}
+            className="bg-gray-900 py-0 px-0 w-8"
+            onClick={handleRefresh}
+          >
             <RefreshCcw
               size={18}
-              className={refresh ? "animate-spin" : ""}
+              className={cn(
+                refresh ? "animate-spin" : ""
+              )}
               color="green"
-              onClick={handleRefresh}
             />
           </Button>
         </div>
@@ -149,9 +154,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}
