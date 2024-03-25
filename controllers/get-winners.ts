@@ -29,7 +29,7 @@ export const getWinnersController = new Elysia().get(
     // 名稱第二字需要隱藏，例如：王小明 -> 王*明
     return winners.map((winner) => ({
       code: winner.member.code,
-      name: winner.member.name.replace(/(?<=^.{1})./g, "*"),
+      name: winner.member.name,
       departmentName: winner.member.departmentName,
       prize: winner.prize.name,
     }));

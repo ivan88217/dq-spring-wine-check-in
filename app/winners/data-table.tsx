@@ -27,10 +27,13 @@ import { RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { edenApi } from "@/lib/api";
-import { Winner, columns as Columns } from "./columns";
+import { Winner, columns as Column, columnsWithoutHidden as ColumnsWithoutHidden } from "./columns";
 
-export function DataTable<TData, TValue>() {
+export function DataTable({
+  isAdmin = false,
+}) {
   const [tableData, setTableData] = useState<Winner[]>([]);
+  const columns = isAdmin ? ColumnsWithoutHidden : Column;
 
   const getData = () => {
     edenApi.api["get-winners"].get().then(({ data }) => {
@@ -53,7 +56,7 @@ export function DataTable<TData, TValue>() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useReactTable({
     data: tableData,
-    columns: Columns,
+    columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -117,11 +120,11 @@ export function DataTable<TData, TValue>() {
     if (currentTimeoutHandler) clearTimeout(currentTimeoutHandler);
     setCurrentTimeoutHandler(null);
     setRefresh(true);
+    getData();
     const timeoutHandler = setTimeout(() => {
       setRefresh(false);
     }, 1000);
     setCurrentTimeoutHandler(timeoutHandler);
-    router.refresh();
   };
 
   return (
@@ -192,7 +195,7 @@ export function DataTable<TData, TValue>() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={Columns.length}
+                  colSpan={columns.length}
                   className="h-24 text-center"
                 >
                   沒有資料
