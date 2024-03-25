@@ -3,7 +3,22 @@ import prisma from "@/lib/prisma";
 
 export const getWinnersController = new Elysia().get(
   "/get-winners",
-  async () => {
+  async ({ query }) => {
+    const { isAdmin } = query;
+    const allowedCheckIn = await prisma.serverOption.findFirst({
+      where: {
+        key: "check-in",
+      },
+      select: {
+        value: true,
+      },
+    });
+
+    // 開放簽到時不顯示得獎名單
+    if (!isAdmin && (!allowedCheckIn || allowedCheckIn.value)) {
+      return [];
+    }
+
     const winners = await prisma.memberPrize.findMany({
       include: {
         member: {
@@ -35,6 +50,9 @@ export const getWinnersController = new Elysia().get(
     }));
   },
   {
+    query: t.Object({
+      isAdmin: t.BooleanString(),
+    }),
     response: t.Array(
       t.Object({
         code: t.String(),

@@ -36,7 +36,11 @@ export function DataTable({
   const columns = isAdmin ? ColumnsWithoutHidden : Column;
 
   const getData = () => {
-    edenApi.api["get-winners"].get().then(({ data }) => {
+    edenApi.api["get-winners"].get({
+      $query: {
+        isAdmin,
+      },
+    }).then(({ data }) => {
       if (data) {
         return setTableData(data);
       }
