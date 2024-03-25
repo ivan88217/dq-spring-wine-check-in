@@ -150,7 +150,7 @@ export function Chart({ data }: ChartProps) {
                   />
                   <YAxis
                     type="number"
-                    domain={[0, "dataMax + 10"]}
+                    domain={[0, `dataMax + ${Math.floor(Math.max(...chartData.map((d) => d.votes)) / 10)}`]}
                     tick={{
                       fill: "#194d91",
                       style: {
