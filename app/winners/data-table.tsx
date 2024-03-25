@@ -26,16 +26,25 @@ import { Combobox } from "./combobox";
 import { RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { edenApi } from "@/lib/api";
+import { Winner, columns as Columns } from "./columns";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}
+export function DataTable<TData, TValue>() {
+  const [tableData, setTableData] = useState<Winner[]>([]);
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+  const getData = () => {
+    edenApi.api["get-winners"].get().then(({ data }) => {
+      if (data) {
+        return setTableData(data);
+      }
+      setTableData([]);
+    });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   const router = useRouter();
   const [refresh, setRefresh] = useState(false);
   const [currentTimeoutHandler, setCurrentTimeoutHandler] =
@@ -43,8 +52,8 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useReactTable({
-    data,
-    columns,
+    data: tableData,
+    columns: Columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -76,7 +85,7 @@ export function DataTable<TData, TValue>({
   };
 
   const SearchableSelect = (column: string, title: string) => {
-    const items = data.map((r: any) => r[column] as string) ?? [];
+    const items = tableData.map((r: any) => r[column] as string) ?? [];
 
     const sets = [...new Set(items)];
 
@@ -183,7 +192,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={Columns.length}
                   className="h-24 text-center"
                 >
                   沒有資料
